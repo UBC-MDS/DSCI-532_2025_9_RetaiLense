@@ -1,5 +1,5 @@
 # RetaiLens Proposal
-### By Ashita, Maegan, Gurmehak, Wai Ming
+### By Ashita, Meagan, Gurmehak, WaiMing
 
 ## Motivation and purpose
 
@@ -20,7 +20,12 @@ Our dashboard provides a comprehensive view of sales trends and customer distrib
 
 0.5M records - 91% from the UK.
 
-## Research questions
+## Research Questions
+Daniella is the Global Head of Sales for a UK-based online retail company that specializes in unique gifts for all occasions. She is focused on gaining deeper insights into the company’s monthly sales, losses, and top-performing products. While the business is strong in the UK, Daniella is eager to identify opportunities for expansion into the other countries where they currently operate, aiming to boost international growth and company profits.
+
+When Daniella opens up our “RetaiLense Executive Dashboard” she is presented with an overview of key sales metrics, including total revenue, losses due to returned orders, top-selling products, and the top 10 sales countries outside of the UK. Using the dashboard, she can filter the data by country to compare sales trends across different regions, drill down into product performance, and identify areas for potential growth. She can also filter by date to narrow down the data to specific months or quarters, allowing her to analyze sales performance over time and detect seasonal trends or spikes in sales.
+
+
 
 
 ## App sketch and description
