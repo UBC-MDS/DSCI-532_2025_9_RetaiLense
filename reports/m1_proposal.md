@@ -1,11 +1,5 @@
----
-title: "RetaiLens Proposal"
-author: "Ashita, Maegan, Gurmehak, Wai Ming"
-output: 
-  pdf_document:
-    latex_engine: xelatex
-    highlight: tango
----
+# RetaiLens Proposal
+### By Ashita, Maegan, Gurmehak, Wai Ming
 
 ## Motivation and purpose
 
@@ -24,7 +18,7 @@ Our dashboard provides a comprehensive view of sales trends and customer distrib
 
 ## Description of the data
 
-0.5M records - 91% from the UK
+0.5M records - 91% from the UK.
 
 ## Research questions
 
