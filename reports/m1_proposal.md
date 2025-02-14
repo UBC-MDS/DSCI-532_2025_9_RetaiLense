@@ -53,4 +53,17 @@ When Daniella opens up our “RetaiLense Executive Dashboard” she is presented
 
 
 ## App sketch and description
+Here is our app sketch:
+
+![](https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense/blob/main/img/sketch.png?raw=true)
+
+The app features a landing page that visualizes key dataset factors such as revenue, gross and net sales, quantity sold, and top-performing countries using various chart types (e.g., bar charts, waterfall charts, and pie charts, depending on the data type).
+
+For filtering options, we plan to implement:
+
+- A time frame slider to allow users to zoom in on specific periods.
+- A dropdown menu to toggle between Product and Sales views, enabling users to analyze either quantity sold or dollar amount sold.
+- Global filters, including:
+  - A country filter that adjusts all charts except for the "Top Countries Outside the UK" visualization.
+  - Start and end date selectors to provide a more focused view of the data.
 
