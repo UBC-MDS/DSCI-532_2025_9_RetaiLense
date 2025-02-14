@@ -56,9 +56,7 @@ As a result of her findings from our dashboard, Daniella can determine which cou
 ## App sketch and description
 Here is our app sketch:
 
-![](https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense/blob/main/img/sketch.png?raw=true)
-<img src="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense/blob/main/img/sketch.png?raw=true" width="500" />
-
+<img src="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense/blob/main/img/sketch.png?raw=true" width="800" />
 
 The app features a landing page that visualizes key dataset factors such as revenue, gross and net sales, quantity sold, and top-performing countries using various chart types (e.g., bar charts, waterfall charts, and pie charts, depending on the data type).
 
