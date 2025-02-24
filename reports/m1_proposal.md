@@ -46,11 +46,24 @@ To enhance our analysis, we introduce:
 
 
 ## Research Questions
-Daniella is the Global Head of Sales for a UK-based online retail company that specializes in unique gifts for all occasions. She is focused on gaining deeper insights into the company’s monthly sales, losses, and top-performing products. While the business is strong in the UK, Daniella is eager to identify opportunities for expansion into the other countries where they currently operate, aiming to boost international growth and company profits.
+Daniella is the Global Head of Sales for a UK-based online retail company that specializes in unique gifts for all occasions. She is responsible for overseeing the company’s sales performance across different countries and ensuring sustainable growth. While the company has a strong presence in the UK, Daniella is eager to identify opportunities for expansion and boost sales in other countries where they currently operate. To do this, she needs to identify key areas for growth, top-performing products, and the sales dynamics across different regions.
 
-When Daniella opens up our “RetaiLense Executive Dashboard” she is presented with an overview of key sales metrics, including total revenue, losses due to returned orders, top-selling products, and the top 10 sales countries outside of the UK. Using the dashboard, she can filter the data by country to compare sales trends across different regions, drill down into product performance, and identify areas for potential growth. She can also filter by date to narrow down the data to specific months or quarters, allowing her to analyze sales performance over time and detect seasonal trends or spikes in sales.
+When Daniella opens up our “RetaiLense Executive Dashboard” she will be presented with an overview of key sales metrics, including total revenue, losses due to returned orders, top-selling products, and the top 10 sales countries outside of the UK. Using the dashboard, she can filter the data by country, enabling her to compare sales trends across different regions and spot key differences in product performance and identify areas for potential growth. Using the date filter, Daniella can analyze sales performance over specific periods = such as monthly or quarterly – to help detect seasonal trends or spikes in sales. For example, she may find that certain products perform well around specific holidays in different countries.
 
-
+As a result of her findings from our dashboard, Daniella can determine which countries present the most promising opportunities for expansion. She can identify top-selling products and target regions where these products are underrepresented. Additionally, she can pinpoint peak sales periods in order to optimize inventory levels. With this strategic insight, Daniella can confidently recommend actions to support international growth, such as tailoring marketing campaigns for specific regions or adjusting inventory to meet customer demands.
 
 ## App sketch and description
+Here is our app sketch:
+
+<img src="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense/blob/main/img/sketch.png?raw=true" width="800" />
+
+The app features a landing page that visualizes key dataset factors such as revenue, gross and net sales, quantity sold, and top-performing countries using various chart types (e.g., bar charts, waterfall charts, and pie charts, depending on the data type).
+
+For filtering options, we plan to implement:
+
+- A time frame slider to allow users to zoom in on specific periods.
+- A dropdown menu to toggle between Product and Sales views, enabling users to analyze either quantity sold or dollar amount sold.
+- Global filters, including:
+  - A country filter that adjusts all charts except for the "Top Countries Outside the UK" visualization.
+  - Start and end date selectors to provide a more focused view of the data.
 
