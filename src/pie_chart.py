@@ -13,7 +13,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.title = "RetaiLense Dashboard"
 
-# Define the function to create the pie chart (as you already have it)
+# Define the function to create the pie chart
 def plot_top_countries_pie_chart(df):
     # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
