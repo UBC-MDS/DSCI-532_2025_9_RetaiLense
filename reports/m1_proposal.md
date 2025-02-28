@@ -42,7 +42,7 @@ The dataset contains ~0.5M rows and 8 columns, representing transactional data f
 #### Engineered Variable  
 To enhance our analysis, we introduce:  
 - Revenue = `Quantity × UnitPrice`  
-  - Measures the net revenue useful for assessing the company's performance and creae trends on the basis of revenue growth. 
+  - Measures the net revenue useful for assessing the company's performance and create trends on the basis of revenue growth. 
 
 
 ## Research Questions
