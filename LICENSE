@@ -1,6 +1,15 @@
+## Creative Commons 4.0 License
+For the analysis report in this repository.
+
+Analysis Report © 2025, Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming is licensed under CC BY 4.0
+
+
+For the portions of the project (.github/workflows/docker-publish.yml) that are derived from Tiffany Timbers' [DSCI 522 Dockerfile Practice](https://github.com/ttimbers/dsci522-dockerfile-practice/blob/main/.github/workflows/docker-publish.yml
+):
+
 MIT License
 
-Copyright (c) 2025 Master of Data Science at the University of British Columbia
+Copyright (c) 2025 Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
