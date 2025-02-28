@@ -1,9 +1,18 @@
 from dash import Dash, dcc, callback, Output, Input, html
 import dash_bootstrap_components as dbc
+import dash_vega_components as dvc
 import pandas as pd
+import altair as alt
 
 # Read the data
 df = pd.read_csv('data/processed/processed_data.csv')
+
+# Ensure 'InvoiceDate' is converted to datetime format
+df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+
+# Create Month-Year column
+df['MonthYear'] = df['InvoiceDate'].dt.strftime('%b-%Y')
+
 
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -11,19 +20,12 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # Get unique countries from the dataframe
 country_columns = [{'label': country, 'value': country} for country in df['Country'].unique()]
 
-# Components
-country_dropdown = dcc.Dropdown(
-    id='country-filter',
-    options=country_columns,
-    value=None,  # Default value (None means no country filter)
-    placeholder='Select a Country'
-)
-
 # Create the cards (initially empty, they will be updated dynamically)
 card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
 card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
 card_net_sales = dbc.Card(id='card-net-sales')
 card_total_returns = dbc.Card(id='card-total-returns')
+
 
 # Layout
 app.layout = dbc.Container([
@@ -31,7 +33,24 @@ app.layout = dbc.Container([
     
     # Row for the dropdown and the cards
     dbc.Row([
-        dbc.Col(country_dropdown, md=3),  # Country dropdown on the left (adjust width)
+        dbc.Col(dbc.Row([
+            dcc.DatePickerRange(
+                id='date-picker-range',
+                start_date=df['InvoiceDate'].min().strftime('%Y-%m-%d'),
+                end_date=df['InvoiceDate'].max().strftime('%Y-%m-%d'),
+                display_format='YYYY-MM-DD',
+                style={'padding': '20px'}
+            ),
+            
+            dcc.Dropdown(
+                id='country-dropdown',
+                options=[{'label': country, 'value': country} for country in df['Country'].unique()],
+                value=['United Kingdom'],  # Default to the UK as a list
+                multi=True,
+                placeholder="Select Country",
+                style={'width': '50%', 'padding': '20px'}
+            ),
+        ]), md=3),  # Country dropdown on the left (adjust width)
         dbc.Col([
             # Cards in a grid layout
             dbc.Row([
@@ -42,7 +61,11 @@ app.layout = dbc.Container([
             ])
         ], md=9)  # This column takes up 9 columns (rest of the row)
     ])
+
+    
 ])
+
+
 
 # Callback to update the cards dynamically based on the selected country
 @callback(
@@ -50,14 +73,16 @@ app.layout = dbc.Container([
     Output('card-loyal-customer-sales', 'children'),
     Output('card-net-sales', 'children'),
     Output('card-total-returns', 'children'),
-    Input('country-filter', 'value')
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'),
+    Input('country-dropdown', 'value')
 )
-def update_cards(country):
-    # Filter the dataframe based on the selected country, or use the full dataset if None
-    if country:
-        filtered_df = df[df['Country'] == country]
-    else:
-        filtered_df = df
+def update_cards(start_date, end_date, selected_countries):
+
+    # Filter the data based on selected date range and countries
+    filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
+                     (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
+                     (df['Country'].isin(selected_countries))]
 
     # Calculate the loyal customer ratio
     loyal_customers = filtered_df['CustomerID'].nunique()
@@ -98,6 +123,8 @@ def update_cards(country):
     ]
     
     return card_loyal_customer_ratio_content, card_loyal_customer_sales_content, card_net_sales_content, card_total_returns_content
+
+
 
 # Run the app
 if __name__ == '__main__':
