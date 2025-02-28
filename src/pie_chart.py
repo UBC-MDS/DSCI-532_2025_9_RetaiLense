@@ -14,7 +14,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "RetaiLense Dashboard"
 
 # Define the function to create the pie chart
-def plot_top_countries_pie_chart(df):
+def plot_top_countries_pie_chart():
     # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
     
@@ -46,7 +46,7 @@ app.layout = html.Div([
     # Create a div for the pie chart using dash_vega_components
     dvc.Vega(
         id='country-pie-chart',
-        spec=plot_top_countries_pie_chart(df)  # Pass the Altair chart spec (dict format)
+        spec=plot_top_countries_pie_chart()  # Pass the Altair chart spec (dict format)
     ),
 ])
 
