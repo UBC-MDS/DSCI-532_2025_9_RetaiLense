@@ -63,7 +63,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         tooltip=['MonthYear:N', 'Revenue:Q']
     ).properties(
         title='Monthly Revenue Trend',
-        # width='container',  # Allow width to scale dynamically
+        width=400
     )
     
     return monthly_revenue_chart.to_dict()
@@ -152,11 +152,11 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     )
 
     # Combine bars and labels
-    waterfall_chart = (bars + text).properties(
-        # width='container',  # Allow width to scale dynamically 
-                                               height=300, 
-                                               title="Revenue Waterfall Chart" )
-    
+    waterfall_chart = (bars + text).properties( width=300,
+                                            #    height=300, 
+                                               title="Revenue Waterfall Chart" 
+    )
+
     return waterfall_chart.to_dict()
 
 @callback(
@@ -201,7 +201,7 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         tooltip=['Description', 'Revenue']
     ).properties(
         title=f'Top {n_products} Products by Revenue',
-        # width='container',  # Allow width to scale dynamically
+        width=400,
         height=300
     )
     
@@ -236,7 +236,7 @@ def plot_top_countries_pie_chart():
         tooltip=['Country', 'Percentage']  # Show Percentage in the tooltip
     ).properties(
         title="Top 5 Countries Outside of the UK",
-        # width='container',  # Allow width to scale dynamically
+        width=400,  # Allow width to scale dynamically
     )
     
     return pie_chart.to_dict()
@@ -353,28 +353,25 @@ app.layout = dbc.Container([
                 dbc.Col(card_total_returns, md=3)
             ]),
             dbc.Row([
-                dbc.Row([# Monthly Revenue Chart
-                        dbc.Col(dvc.Vega(
+                        dbc.Col(dbc.Container([dvc.Vega(
                             id='monthly-revenue', 
                             spec={}
-                        ), md=6),  # Empty chart initially,
-                        dbc.Col(dvc.Vega(
+                        )]), md=6),  
+                        dbc.Col(dbc.Container([dvc.Vega(
                             id='country-pie-chart',
-                            spec=plot_top_countries_pie_chart()  # Pass the Altair chart spec (dict format)
-                        ), md=6)
-                        ])
+                            spec=plot_top_countries_pie_chart() 
+                        )]), md=6)
             ]),
-            dbc.Row([
-                dbc.Row([ dbc.Col(dvc.Vega(
+            dbc.Row([ dbc.Col(dbc.Container([dvc.Vega(
                             id='product-bar-chart',
-                            spec={}  # Empty spec that will be filled by callback
-                        ), md=8), 
-                        dbc.Col(dvc.Vega(
+                            spec={}  
+                        )]), md=8), 
+                        dbc.Col(dbc.Container([dvc.Vega(
                             id='waterfall-chart',
-                            spec={}  # Pass the Altair chart spec (dict format)
-                        ), md=4) ])
+                            spec={}
+                        )]), md=4)
             ]),
-        ], md=9)  # This column takes up 8 columns (rest of the row)
+        ], md=9) 
     ]),
 
      dbc.Row([
@@ -390,7 +387,7 @@ app.layout = dbc.Container([
                 html.P("Last updated on Feb 28, 2025",
                        style={"font-size": "12px"}),
             ])
-        ], width=12),
+        ], md=12),
     ]),
 ])
 
