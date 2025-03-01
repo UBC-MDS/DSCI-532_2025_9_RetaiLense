@@ -21,6 +21,13 @@ app.title = "Monthly Revenue Dashboard"
 
 
 
+# Create the cards (initially empty, they will be updated dynamically)
+card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
+card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
+card_net_sales = dbc.Card(id='card-net-sales')
+card_total_returns = dbc.Card(id='card-total-returns')
+
+
 # Server side callbacks (reactivity)
 @callback(
     Output('monthly-revenue', 'spec'),
@@ -44,7 +51,8 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         y=alt.Y('Revenue:Q', title='Total Revenue'),
         tooltip=['MonthYear:N', 'Revenue:Q']
     ).properties(
-        title='Monthly Revenue Trend'
+        title='Monthly Revenue Trend',
+        # width='container',  # Allow width to scale dynamically
     )
     
     return monthly_revenue_chart.to_dict()
@@ -57,7 +65,6 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     Input('country-dropdown', 'value')
 )
 def plot_waterfall_chart(start_date, end_date, selected_countries):
-
 
     # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
@@ -124,7 +131,10 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     )
 
     # Combine bars and labels
-    waterfall_chart = (bars + text).properties(width=600, height=400, title="Revenue Waterfall Chart" )
+    waterfall_chart = (bars + text).properties(
+        # width='container',  # Allow width to scale dynamically 
+                                               height=300, 
+                                               title="Revenue Waterfall Chart" )
     
     return waterfall_chart.to_dict()
 
@@ -135,25 +145,6 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     Input('country-dropdown', 'value')
 )
 def plot_top_products_revenue(start_date, end_date, selected_countries, n_products=10):
-    """
-    Create a bar chart of top products by revenue using Altair.
-    
-    Parameters:
-    -----------
-    start_date : str
-        Start date for filtering
-    end_date : str
-        End date for filtering
-    selected_countries : list
-        List of selected countries for filtering
-    n_products : int, optional
-        Number of top products to display (default: 10)
-        
-    Returns:
-    --------
-    dict
-        Vega-Lite specification for the bar chart
-    """
     
     # Filter the data based on selected date range and countries
     filtered_df = df[
@@ -174,11 +165,11 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
         y=alt.Y('Description:N', sort='-x', title='Product Description'),
-        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel2')),
+        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel2'), legend=None),
         tooltip=['Description', 'Revenue']
     ).properties(
         title=f'Top {n_products} Products by Revenue',
-        width=600,
+        # width='container',  # Allow width to scale dynamically
         height=300
     )
     
@@ -206,60 +197,150 @@ def plot_top_countries_pie_chart():
                         scale=alt.Scale(scheme='pastel1')),  # Use a categorical color scheme
         tooltip=['Country', 'Percentage']  # Show Percentage in the tooltip
     ).properties(
-        title="Top 5 Countries Outside of the UK"
+        title="Top 5 Countries Outside of the UK",
+        # width='container',  # Allow width to scale dynamically
     )
     
     return pie_chart.to_dict()
 
 
 
+# Callback to update the cards dynamically based on the selected country
+@callback(
+    Output('card-loyal-customer-ratio', 'children'),
+    Output('card-loyal-customer-sales', 'children'),
+    Output('card-net-sales', 'children'),
+    Output('card-total-returns', 'children'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date'),
+    Input('country-dropdown', 'value')
+)
+def update_cards(start_date, end_date, selected_countries):
+
+    # Filter the data based on selected date range and countries
+    filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
+                     (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
+                     (df['Country'].isin(selected_countries))]
+
+    # Calculate the loyal customer ratio
+    loyal_customers = filtered_df['CustomerID'].nunique()
+    non_loyal_customers = filtered_df[filtered_df['CustomerID'].isna()]
+    total_non_loyal_customers = non_loyal_customers['InvoiceNo'].nunique()  # Count unique InvoiceNo for non-loyal customers
+    total_unique_customers = loyal_customers + total_non_loyal_customers
+    
+    if total_unique_customers == 0:
+        loyal_customers_ratio = 0
+    else:
+        loyal_customers_ratio = loyal_customers / total_unique_customers
+    loyal_customer_ratio_value = f"{round(loyal_customers_ratio * 100, 2)}%"
+
+    # Calculate the loyal customer sales
+    non_blank_customer_ids = filtered_df[filtered_df['CustomerID'].notna()]
+    total_sales = non_blank_customer_ids['Revenue'].sum()
+    loyal_customer_sales_value = f"${total_sales:,.2f}"
+
+    # Calculate net sales
+    net_sales_value = f"${filtered_df['Revenue'].sum():,.2f}"
+
+    # Calculate total returns
+    returns = filtered_df[filtered_df['Revenue'] < 0]
+    total_returns_value = f"${returns['Revenue'].sum():,.2f}"
+
+    # Create the content for each card
+    card_loyal_customer_ratio_content = [
+        dbc.CardHeader('Loyal Customer Ratio'),
+        dbc.CardBody(loyal_customer_ratio_value)
+    ]
+    card_loyal_customer_sales_content = [
+        dbc.CardHeader('Loyal Customer Sales'),
+        dbc.CardBody(loyal_customer_sales_value)
+    ]
+    card_net_sales_content = [
+        dbc.CardHeader('Net Sales'),
+        dbc.CardBody(net_sales_value)
+    ]
+    card_total_returns_content = [
+        dbc.CardHeader('Total Returns'),
+        dbc.CardBody(total_returns_value)
+    ]
+    
+    return card_loyal_customer_ratio_content, card_loyal_customer_sales_content, card_net_sales_content, card_total_returns_content
+
+
 
 # Layout with Date Range Picker and Country Dropdown
 app.layout = dbc.Container([
-    html.H1("RetaiLense Dashboard"),
-    
-    # Global filters
-    html.Div([
-        dcc.DatePickerRange(
-            id='date-picker-range',
-            start_date=df['InvoiceDate'].min().strftime('%Y-%m-%d'),
-            end_date=df['InvoiceDate'].max().strftime('%Y-%m-%d'),
-            display_format='YYYY-MM-DD',
-            style={'padding': '20px'}
-        ),
-        
-        dcc.Dropdown(
-            id='country-dropdown',
-            options=[{'label': country, 'value': country} for country in df['Country'].unique()],
-            value=['United Kingdom'],  # Default to the UK as a list
-            multi=True,
-            placeholder="Select Country",
-            style={'width': '50%', 'padding': '20px'}
-        ),
-    ], style={'display': 'flex', 'flexDirection': 'row', 'alignItems': 'center'}),
-    
-    # create div for bar chart using dash_vega_components
-    dvc.Vega(
-        id='product-bar-chart',
-        spec={}  # Empty spec that will be filled by callback
-    ),
+    dbc.Row(dbc.Col(html.H1('RetaiLense'))),
 
-    # Monthly Revenue Chart
-    dvc.Vega(
-        id='monthly-revenue', 
-        spec={}
-    ),  # Empty chart initially
+    dbc.Row([
+        dbc.Col(dbc.Row([
+            html.Label('Date Range:'),
+            dcc.DatePickerRange(
+                id='date-picker-range',
+                start_date=df['InvoiceDate'].min().strftime('%Y-%m-%d'),
+                end_date=df['InvoiceDate'].max().strftime('%Y-%m-%d'),
+                display_format='YYYY-MM-DD',
+                style={'padding': '20px'}
+            ),
+            
+            html.Label('Select Countries:'),
+            dcc.Dropdown(
+                id='country-dropdown',
+                options=[{'label': country, 'value': country} for country in df['Country'].unique()],
+                value=['United Kingdom'],  # Default to the UK as a list
+                multi=True,
+                placeholder="Select Country",
+                style={ 'padding': '20px'}
+            ),
+        ]), md=3),  # Country dropdown on the left (adjust width)
+        dbc.Col([
+            # Cards in a grid layout
+            dbc.Row([
+                dbc.Col(card_loyal_customer_ratio, md=3), 
+                dbc.Col(card_loyal_customer_sales, md=3),
+                dbc.Col(card_net_sales, md=3),
+                dbc.Col(card_total_returns, md=3)
+            ]),
+            dbc.Row([
+                dbc.Row([# Monthly Revenue Chart
+                        dbc.Col(dvc.Vega(
+                            id='monthly-revenue', 
+                            spec={}
+                        ), md=6),  # Empty chart initially,
+                        dbc.Col(dvc.Vega(
+                            id='country-pie-chart',
+                            spec=plot_top_countries_pie_chart()  # Pass the Altair chart spec (dict format)
+                        ), md=6)
+                        ])
+            ]),
+            dbc.Row([
+                dbc.Row([ dbc.Col(dvc.Vega(
+                            id='product-bar-chart',
+                            spec={}  # Empty spec that will be filled by callback
+                        ), md=8), 
+                        dbc.Col(dvc.Vega(
+                            id='waterfall-chart',
+                            spec={}  # Pass the Altair chart spec (dict format)
+                        ), md=4) ])
+            ]),
+        ], md=9)  # This column takes up 8 columns (rest of the row)
+    ]),
 
-    dvc.Vega(
-        id='country-pie-chart',
-        spec=plot_top_countries_pie_chart()  # Pass the Altair chart spec (dict format)
-    ),
-
-    # Create a div for the pie chart using dash_vega_components
-    dvc.Vega(
-        id='waterfall-chart',
-        spec={}  # Pass the Altair chart spec (dict format)
-    ),
+     dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.P(" ", style={"font-size": "12px"}),
+                html.P("RetaiLense is an interactive dashboard designed to monitor and optimize eCommerce sales across international markets for a UK-based online retail company.",
+                       style={"font-size": "12px"}),
+                html.P("Authors: Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming",
+                       style={"font-size": "12px"}),
+                html.A("GitHub Repository", href="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense",
+                       target="_blank", style={"font-size": "12px"}),
+                html.P("Last updated on Feb 28, 2025",
+                       style={"font-size": "12px"}),
+            ])
+        ], width=12),
+    ]),
 ])
 
 # Run the app
