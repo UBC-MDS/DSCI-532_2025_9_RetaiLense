@@ -89,7 +89,11 @@ def update_cards(start_date, end_date, selected_countries):
     non_loyal_customers = filtered_df[filtered_df['CustomerID'].isna()]
     total_non_loyal_customers = non_loyal_customers['InvoiceNo'].nunique()  # Count unique InvoiceNo for non-loyal customers
     total_unique_customers = loyal_customers + total_non_loyal_customers
-    loyal_customers_ratio = loyal_customers / total_unique_customers
+    
+    if total_unique_customers == 0:
+        loyal_customers_ratio = 0
+    else:
+        loyal_customers_ratio = loyal_customers / total_unique_customers
     loyal_customer_ratio_value = f"{round(loyal_customers_ratio * 100, 2)}%"
 
     # Calculate the loyal customer sales
