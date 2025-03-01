@@ -49,7 +49,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     
     return monthly_revenue_chart.to_dict()
 
-# Define the function to create the pie chart (as you already have it)
+# Define the function to create the pie chart (as you already have it).
 @callback(
     Output('waterfall-chart', 'spec'),
     Input('date-picker-range', 'start_date'),
