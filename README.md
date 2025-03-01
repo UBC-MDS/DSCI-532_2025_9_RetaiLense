@@ -25,7 +25,7 @@ This dashboard features the following interactive filters:
 - Country selection
 - Multiple visualization components that update dynamically based on the selected filters
 
-(enter gif here)
+![gif](./img/RetaiLense.gif)
 
 
 ## Running the dashboard locally
