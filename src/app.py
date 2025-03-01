@@ -21,13 +21,14 @@ app.title = "Monthly Revenue Dashboard"
 
 
 
-# Create the cards (initially empty, they will be updated dynamically).
+# Create the cards (initially empty, they will be updated dynamically)
 card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
 card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
 card_net_sales = dbc.Card(id='card-net-sales')
 card_total_returns = dbc.Card(id='card-total-returns')
 
 
+# Server side callbacks (reactivity)
 @callback(
     Output('monthly-revenue', 'spec'),
     Input('date-picker-range', 'start_date'),
@@ -46,28 +47,28 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     Returns:
     - dict: Altair chart specification (JSON format).
     """
+    # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
                      (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
                      (df['Country'].isin(selected_countries))]
     
+    # Create the Altair chart
     monthly_revenue_chart = alt.Chart(
         filtered_df.groupby('MonthYear')['Revenue'].sum().reset_index()
     ).mark_line(point=True).encode(
         x=alt.X('MonthYear:N', 
-                sort=pd.to_datetime(filtered_df['MonthYear'].unique(), format='%b-%Y')
-                     .sort_values()
-                     .strftime('%b-%Y')
-                     .tolist(), 
+                sort=pd.to_datetime(filtered_df['MonthYear'].unique(), format='%b-%Y').sort_values().strftime('%b-%Y').tolist(), 
                 title='Month-Year'),
         y=alt.Y('Revenue:Q', title='Total Revenue'),
         tooltip=['MonthYear:N', 'Revenue:Q']
     ).properties(
         title='Monthly Revenue Trend',
+        # width='container',  # Allow width to scale dynamically
     )
     
     return monthly_revenue_chart.to_dict()
 
-
+# Define the function to create the pie chart (as you already have it)
 @callback(
     Output('waterfall-chart', 'spec'),
     Input('date-picker-range', 'start_date'),
@@ -86,37 +87,77 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     Returns:
     - dict: Altair chart specification (JSON format).
     """
+    # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
-                     (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
-                     (df['Country'].isin(selected_countries))]
+                       (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
+                       (df['Country'].isin(selected_countries))]
     
+    # Compute Gross Revenue (sum of revenue where quantity > 0)
     gross_revenue = filtered_df.loc[filtered_df['Quantity'] > 0, 'Revenue'].sum()
+
+    # Compute Refund (sum of revenue where quantity < 0)
     refund = filtered_df.loc[filtered_df['Quantity'] < 0, 'Revenue'].sum()
+
+    # Compute Net Revenue (Gross Revenue + Refund)
     net_revenue = gross_revenue + refund
 
+    # Create the final DataFrame
     working_df = pd.DataFrame({
         'Category': ['Gross Revenue', 'Refund', 'Net Revenue'],
         'Value': [gross_revenue, refund, net_revenue]
     })
 
+
+    # Define explicit category order
+    category_order = working_df['Category'].tolist()
+    
+    # Add an index column to enforce order
+    working_df['Index'] = range(len(working_df))  # Assign numerical order explicitly
+
+    # Convert Category column to categorical with correct order
+    working_df['Category'] = pd.Categorical(working_df['Category'], categories=category_order, ordered=True)
+
+    # Compute cumulative values properly
     working_df['Start'] = working_df['Value'].cumsum().shift(1).fillna(0)
     working_df['End'] = working_df['Start'] + working_df['Value']
-    
+
+    # Force Net Revenue to start from zero
     working_df.loc[working_df['Category'] == 'Net Revenue', 'Start'] = 0
     working_df.loc[working_df['Category'] == 'Net Revenue', 'End'] = working_df['Value']
 
-    waterfall_chart = alt.Chart(working_df).mark_bar().encode(
-        x=alt.X('Category:N', title='Category'),
+    # Define colors
+    working_df['Color'] = working_df['Value'].apply(lambda x: 'Increase' if x > 0 else 'Decrease')
+
+    # Create a mapping of Index to Category labels
+    category_labels = {i: cat for i, cat in enumerate(working_df['Category'])}
+
+    # Create the waterfall chart
+    bars = alt.Chart(working_df).mark_bar().encode(
+        x=alt.X('Index:O', title='Category', sort=list(working_df['Index']),  
+                axis=alt.Axis(labelExpr=f"datum.value == 0 ? '{category_labels[0]}' : " +
+                                       f"datum.value == 1 ? '{category_labels[1]}' : " +
+                                       f"datum.value == 2 ? '{category_labels[2]}' : ''",
+                              labelAngle=-45)),  # Replaces 0,1,2 with actual labels
         y=alt.Y('Start:Q', title='Revenue'),
         y2='End:Q',
+        color=alt.Color('Color:N', scale=alt.Scale(domain=['Increase', 'Decrease'], range=['green', 'red']), legend=None),
         tooltip=['Category', 'Value']
-    ).properties(
-        height=300, 
-        title="Revenue Waterfall Chart"
     )
+
+    # Add text labels
+    text = alt.Chart(working_df).mark_text(dy=-10, size=12).encode(
+        x='Index:O',
+        y='End:Q',
+        text=alt.Text('Value:Q', format=',.0f')
+    )
+
+    # Combine bars and labels
+    waterfall_chart = (bars + text).properties(
+        # width='container',  # Allow width to scale dynamically 
+                                               height=300, 
+                                               title="Revenue Waterfall Chart" )
     
     return waterfall_chart.to_dict()
-
 
 @callback(
     Output('product-bar-chart', 'spec'),
@@ -137,12 +178,14 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     Returns:
     - dict: Altair chart specification (JSON format).
     """
+    # Filter the data based on selected date range and countries
     filtered_df = df[
         (df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
         (df['InvoiceDate'] <= pd.to_datetime(end_date)) & 
         (df['Country'].isin(selected_countries))
     ]
     
+    # group description by revenue then get the top products
     product_revenue = (filtered_df
         .groupby('Description')['Revenue']
         .sum()
@@ -150,18 +193,21 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         .head(n_products)
         .reset_index())
     
+    # plot the bar chart
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
         y=alt.Y('Description:N', sort='-x', title='Product Description'),
+        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel2'), legend=None),
         tooltip=['Description', 'Revenue']
     ).properties(
         title=f'Top {n_products} Products by Revenue',
+        # width='container',  # Allow width to scale dynamically
         height=300
     )
     
     return bar_chart.to_dict()
 
-
+# Define the function to create the pie chart
 def plot_top_countries_pie_chart():
     """
     Creates a pie chart showing the top 5 countries (excluding the UK) by sales.
@@ -169,23 +215,32 @@ def plot_top_countries_pie_chart():
     Returns:
     - dict: Altair chart specification (JSON format).
     """
+    # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
     
+    # Count the occurrences of each country and reset index
     country_counts = df_no_uk['Country'].value_counts().reset_index()
     country_counts.columns = ['Country', 'Count']
     
+    # Calculate percentage
     country_counts['Percentage'] = round((country_counts['Count'] / country_counts['Count'].sum()) * 100, 0)
+    
+    # Get top 5 countries
     country_counts = country_counts.head(5)
     
+    # Create the Altair pie chart with percentages
     pie_chart = alt.Chart(country_counts).mark_arc().encode(
-        theta=alt.Theta(field="Percentage", type="quantitative"),
-        color=alt.Color(field="Country", type="nominal"),
-        tooltip=['Country', 'Percentage']
+        theta=alt.Theta(field="Percentage", type="quantitative"),  # Use Percentage for the arc size
+        color=alt.Color(field="Country", type="nominal", 
+                        scale=alt.Scale(scheme='pastel1')),  # Use a categorical color scheme
+        tooltip=['Country', 'Percentage']  # Show Percentage in the tooltip
     ).properties(
-        title="Top 5 Countries Outside of the UK"
+        title="Top 5 Countries Outside of the UK",
+        # width='container',  # Allow width to scale dynamically
     )
     
     return pie_chart.to_dict()
+
 
 
 # Callback to update the cards dynamically based on the selected country
@@ -264,8 +319,7 @@ def update_cards(start_date, end_date, selected_countries):
     return card_loyal_customer_ratio_content, card_loyal_customer_sales_content, card_net_sales_content, card_total_returns_content
 
 
-
-# Layout with Date Range Picker and Country Dropdown
+# Layout with Date Range Picker and Country Dropdown.
 app.layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1('RetaiLense'))),
 
