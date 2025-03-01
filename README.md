@@ -2,18 +2,17 @@
 
 Authors: Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming
 
-
 ## About RetaiLense
 **RetaiLense** is an interactive dashboard designed to monitor and optimize eCommerce sales across international markets for a UK-based online retail company. It provides insights into global revenue, seasonal trends, top-selling products, and regional performance, helping identify growth opportunities in different countries. By analyzing product demand, return data, and country-specific performance, users can make informed decisions to drive international expansion and optimize sales strategies.
 
 ## Motivation
 
 ### Problem:
-Retail businesses often struggle to quickly analyze and visualize their sales data, making it difficult to identify trends, top-performing products, and revenue patterns accross different countries and time periods.
+Retail businesses often struggle to quickly analyze and visualize their sales data, making it difficult to identify trends, top-performing products, and revenue patterns across different countries and time periods.
 
-### Soltuion:
+### Solution:
 Our dashboard provides an intuitive interface to explore retail data through various visualizations:
-- Bar chart to show top producs by revenue
+- Bar chart to show top products by revenue
 - Revenue trend analysis over time
 - Waterfall chart to show gross revenue, refunds, and net revenue
 - Metric cards to show Key Performance Indicators (KPI)
@@ -26,7 +25,6 @@ This dashboard features the following interactive filters:
 - Multiple visualization components that update dynamically based on the selected filters
 
 ![gif](./img/demo.gif)
-
 
 ## Running the dashboard locally
 
