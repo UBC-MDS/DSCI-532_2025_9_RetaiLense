@@ -207,40 +207,77 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     
     return bar_chart.to_dict()
 
-# Define the function to create the pie chart
-def plot_top_countries_pie_chart():
+@callback(
+    Output('country-pie-chart', 'spec'),
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date')
+)
+def plot_top_countries_pie_chart(start_date, end_date):
     """
     Creates a pie chart showing the top 5 countries (excluding the UK) by sales.
+
+    Parameters:
+    - start_date (str): The start date selected in the date picker.
+    - end_date (str): The end date selected in the date picker.
 
     Returns:
     - dict: Altair chart specification (JSON format).
     """
     # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
+
+    df_no_uk = df_no_uk[(df_no_uk['InvoiceDate'] >= pd.to_datetime(start_date)) & 
+                        (df_no_uk['InvoiceDate'] <= pd.to_datetime(end_date))]
     
     # Count the occurrences of each country and reset index
     country_counts = df_no_uk['Country'].value_counts().reset_index()
     country_counts.columns = ['Country', 'Count']
     
     # Calculate percentage
-    country_counts['Percentage'] = round((country_counts['Count'] / country_counts['Count'].sum()) * 100, 0)
+    total_count = country_counts['Count'].sum()
+    country_counts['Percentage'] = round((country_counts['Count'] / total_count) * 100, 1)
     
     # Get top 5 countries
-    country_counts = country_counts.head(5)
+    top_countries = country_counts.head(5)
+
+    # Calculate the "Others" percentage
+    others_percentage = 100 - top_countries['Percentage'].sum()
+
+    # Append "Others" to the DataFrame
+    others_row = pd.DataFrame({'Country': ['Others'], 'Count': [total_count - top_countries['Count'].sum()], 'Percentage': [others_percentage]})
+    final_data = pd.concat([top_countries, others_row], ignore_index=True)
     
+
+
+    # Create an Altair selection object for clicking on the pie slices
+    selection = alt.selection_point(fields=['Country'], 
+                                    nearest= False, 
+                                    empty="none",
+                                    name="selected_country")
+
     # Create the Altair pie chart with percentages
-    pie_chart = alt.Chart(country_counts).mark_arc().encode(
-        theta=alt.Theta(field="Percentage", type="quantitative"),  # Use Percentage for the arc size
-        color=alt.Color(field="Country", type="nominal", 
-                        scale=alt.Scale(scheme='pastel1')),  # Use a categorical color scheme
-        tooltip=['Country', 'Percentage']  # Show Percentage in the tooltip
-    ).properties(
-        title="Top 5 Countries Outside of the UK",
-        width=400,  # Allow width to scale dynamically
+    pie_chart = alt.Chart(final_data).mark_arc().encode(
+        theta=alt.Theta(field="Percentage", type="quantitative").stack(True),
+        opacity=alt.condition(selection, alt.value(1), alt.value(0.5)), 
+        tooltip=['Country', 'Percentage']
     )
     
-    return pie_chart.to_dict()
+    chart = pie_chart.mark_arc(outerRadius=120).encode(
+         color=alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='pastel1'), legend=None)
+    ).add_params(selection).properties(
+        title="Top 5 Countries Outside of the UK",
+        width=500
+    )
 
+    text = pie_chart.mark_text(
+        size=14, fontWeight='bold', color='black', radius=150
+    ).encode(
+        text=alt.Text('Country:N'),  # Show country names
+    )
+
+    pie_chart = (chart + text)
+
+    return pie_chart.to_dict()
 
 
 # Callback to update the cards dynamically based on the selected country
@@ -319,8 +356,103 @@ def update_cards(start_date, end_date, selected_countries):
     return card_loyal_customer_ratio_content, card_loyal_customer_sales_content, card_net_sales_content, card_total_returns_content
 
 
+@callback(
+    Output('other-countries-store', 'data'),  # Store list of "Others" countries
+    Input('date-picker-range', 'start_date'),
+    Input('date-picker-range', 'end_date')
+)
+def compute_other_countries(start_date, end_date):
+    """
+    Computes the list of countries that fall under the "Others" category 
+    (i.e., all non-top-5 countries based on sales) and stores them.
+
+    Parameters:
+    - start_date (str): The selected start date from the date picker.
+    - end_date (str): The selected end date from the date picker.
+
+    Returns:
+    - list: A list of country names that are not in the top 5 by sales.
+    """
+    # Exclude the United Kingdom
+    df_no_uk = df[df['Country'] != 'United Kingdom']
+
+    df_no_uk = df_no_uk[(df_no_uk['InvoiceDate'] >= pd.to_datetime(start_date)) & 
+                        (df_no_uk['InvoiceDate'] <= pd.to_datetime(end_date))]
+    
+    # Count occurrences of each country and reset index
+    country_counts = df_no_uk['Country'].value_counts().reset_index()
+    country_counts.columns = ['Country', 'Count']
+    
+    # Get the list of "Others" countries
+    other_countries = country_counts.iloc[5:]['Country'].tolist()
+
+    return other_countries  # Return only the list
+
+@callback(
+    Output('selected-country-store', 'data'),  # Store selected country
+    Input('country-pie-chart', 'signalData')  # Capture Vega selection
+)
+def store_selected_country(signalData):
+    """
+    Captures the selected country from the pie chart and stores it.
+    If "Others" is clicked, it stores "Others" instead of a single country.
+
+    Parameters:
+    - signalData (dict): Data from the Vega chart representing the selected country.
+
+    Returns:
+    - str or None: The name of the selected country if a valid selection was made, 
+                   otherwise None.
+    """
+    print(signalData)  # Debugging output
+    
+    if signalData and "selected_country" in signalData:
+        selected_data = signalData["selected_country"]
+        
+        if "Country" in selected_data and isinstance(selected_data["Country"], list):
+            selected_country = selected_data["Country"][0]  # Extract first country in the list
+            print(f"Extracted Country: {selected_country}")  # Debugging output
+            
+            return selected_country  # Store only the name (not the full list)
+        
+    return None  # Default to None if nothing is clicked
+
+@callback(
+    Output('country-dropdown', 'value'),
+    Input('selected-country-store', 'data'),  # Read from stored selection
+    Input('other-countries-store', 'data')  # Read from stored "Others" countries
+)
+def update_country_dropdown(selected_country, other_countries):
+    """
+    Updates the country dropdown based on the selected country from the pie chart.
+    If "Others" is clicked, it updates the dropdown with all non-top-5 countries.
+
+    Parameters:
+    - selected_country (str or None): The country selected from the pie chart.
+                                      If "Others" is clicked, it will be "Others".
+    - other_countries (list): List of all non-top-5 countries (stored separately).
+
+    Returns:
+    - list: A list of selected countries to update the dropdown. If "Others" is 
+            selected, the dropdown will contain all non-top-5 countries.
+    """
+    print(f"Dropdown Updated: {selected_country}")  # Debugging output
+    
+    if selected_country == "Others":
+        return other_countries  # Set dropdown to all "Others" countries
+    
+    if selected_country:
+        return [selected_country]  # Ensure it's a list (Dropdown expects a list)
+    
+    return ['United Kingdom']  # Default selection
+
+
+
 # Layout with Date Range Picker and Country Dropdown.
 app.layout = dbc.Container([
+    dcc.Store(id='selected-country-store', data=None),
+    dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
+
     dbc.Row(dbc.Col(html.H1('RetaiLense'))),
 
     dbc.Row([
@@ -359,7 +491,8 @@ app.layout = dbc.Container([
                         )]), md=6),  
                         dbc.Col(dbc.Container([dvc.Vega(
                             id='country-pie-chart',
-                            spec=plot_top_countries_pie_chart() 
+                            signalsToObserve=["selected_country"],
+                            spec={}
                         )]), md=6)
             ]),
             dbc.Row([ dbc.Col(dbc.Container([dvc.Vega(
