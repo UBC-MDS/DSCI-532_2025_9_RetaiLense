@@ -20,12 +20,107 @@ server = app.server
 app.title = "Monthly Revenue Dashboard"
 
 
+#Component
+date_picker_range = dcc.DatePickerRange(
+    id='date-picker-range',
+    start_date=df['InvoiceDate'].min().strftime('%Y-%m-%d'),
+    end_date=df['InvoiceDate'].max().strftime('%Y-%m-%d'),
+    display_format='YYYY-MM-DD',
+    style={'padding': '20px'}
+    )
 
-# Create the cards (initially empty, they will be updated dynamically).
+country_dropdown = dcc.Dropdown(
+    id='country-dropdown',
+    options=[{'label': country, 'value': country} for country in df['Country'].unique()],
+    value=['United Kingdom'],  # Default to the UK as a list
+    multi=True,
+    placeholder="Select Country",
+    style={ 'padding': '20px'}
+    )
+
 card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
+
 card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
+
 card_net_sales = dbc.Card(id='card-net-sales')
+
 card_total_returns = dbc.Card(id='card-total-returns')
+
+product_bar_chart = dvc.Vega(
+    id='product-bar-chart',
+    spec={},
+    style={'width': '100%'}
+    )
+
+country_pie_chart = dvc.Vega(
+    id='country-pie-chart',
+    signalsToObserve=["selected_country"],
+    spec={},
+    style={'width': '100%'}
+    )
+
+waterfall_chart = dvc.Vega(
+    id='waterfall-chart',
+    spec={},
+    style={'width': '100%'}
+    )
+
+monthly_revenue_chart = dvc.Vega(
+    id='monthly-revenue', 
+    spec={},
+    style={'width': '100%'}
+    )
+
+# Layout
+
+app.layout = dbc.Container([
+    dcc.Store(id='selected-country-store', data=None),
+    dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
+
+    dbc.Row(dbc.Col(html.H1('RetaiLense'))),
+
+    dbc.Row([
+        dbc.Col(dbc.Row([
+            html.Label('Date Range:'),
+            date_picker_range,
+            html.Label('Select Countries:'),
+            country_dropdown,
+        ]), md=3),  # Country dropdown on the left (adjust width)
+        dbc.Col([
+            # Cards in a grid layout
+            dbc.Row([
+                dbc.Col(card_loyal_customer_ratio), 
+                dbc.Col(card_loyal_customer_sales),
+                dbc.Col(card_net_sales),
+                dbc.Col(card_total_returns)
+            ]),
+            dbc.Row([
+                dbc.Col(dbc.Container([monthly_revenue_chart], fluid=True), md=6), 
+                dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=6), 
+            ]),
+            dbc.Row([
+                dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=8),
+                dbc.Col(dbc.Container([waterfall_chart], fluid=True), md=4)
+            ]),
+        ], md=9) 
+    ]),
+
+     dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.P(" ", style={"font-size": "12px"}),
+                html.P("RetaiLense is an interactive dashboard designed to monitor and optimize eCommerce sales across international markets for a UK-based online retail company.",
+                       style={"font-size": "12px"}),
+                html.P("Authors: Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming",
+                       style={"font-size": "12px"}),
+                html.A("GitHub Repository", href="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense",
+                       target="_blank", style={"font-size": "12px"}),
+                html.P("Last updated on Feb 28, 2025",
+                       style={"font-size": "12px"}),
+            ])
+        ], md=12),
+    ]),
+])
 
 
 # Server side callbacks (reactivity)
@@ -63,7 +158,8 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         tooltip=['MonthYear:N', 'Revenue:Q']
     ).properties(
         title='Monthly Revenue Trend',
-        width=400
+        width='container',
+        height = 300
     )
     
     return monthly_revenue_chart.to_dict()
@@ -152,10 +248,10 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     )
 
     # Combine bars and labels
-    waterfall_chart = (bars + text).properties( width=300,
-                                            #    height=300, 
-                                               title="Revenue Waterfall Chart" 
-    )
+    waterfall_chart = (bars + text).properties( title="Revenue Waterfall Chart",
+                                               width='container',
+                                               height = 300
+                                               )
 
     return waterfall_chart.to_dict()
 
@@ -201,8 +297,8 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         tooltip=['Description', 'Revenue']
     ).properties(
         title=f'Top {n_products} Products by Revenue',
-        width=400,
-        height=300
+        width='container',
+        height = 300
     )
     
     return bar_chart.to_dict()
@@ -266,7 +362,8 @@ def plot_top_countries_pie_chart(start_date, end_date):
          color=alt.Color(field="Country", type="nominal", scale=alt.Scale(scheme='pastel1'), legend=None)
     ).add_params(selection).properties(
         title="Top 5 Countries Outside of the UK",
-        width=500
+        width='container',
+        height = 300
     )
 
     text = pie_chart.mark_text(
@@ -447,82 +544,6 @@ def update_country_dropdown(selected_country, other_countries):
     return ['United Kingdom']  # Default selection
 
 
-
-# Layout with Date Range Picker and Country Dropdown.
-app.layout = dbc.Container([
-    dcc.Store(id='selected-country-store', data=None),
-    dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
-
-    dbc.Row(dbc.Col(html.H1('RetaiLense'))),
-
-    dbc.Row([
-        dbc.Col(dbc.Row([
-            html.Label('Date Range:'),
-            dcc.DatePickerRange(
-                id='date-picker-range',
-                start_date=df['InvoiceDate'].min().strftime('%Y-%m-%d'),
-                end_date=df['InvoiceDate'].max().strftime('%Y-%m-%d'),
-                display_format='YYYY-MM-DD',
-                style={'padding': '20px'}
-            ),
-            
-            html.Label('Select Countries:'),
-            dcc.Dropdown(
-                id='country-dropdown',
-                options=[{'label': country, 'value': country} for country in df['Country'].unique()],
-                value=['United Kingdom'],  # Default to the UK as a list
-                multi=True,
-                placeholder="Select Country",
-                style={ 'padding': '20px'}
-            ),
-        ]), md=3),  # Country dropdown on the left (adjust width)
-        dbc.Col([
-            # Cards in a grid layout
-            dbc.Row([
-                dbc.Col(card_loyal_customer_ratio, md=3), 
-                dbc.Col(card_loyal_customer_sales, md=3),
-                dbc.Col(card_net_sales, md=3),
-                dbc.Col(card_total_returns, md=3)
-            ]),
-            dbc.Row([
-                        dbc.Col(dbc.Container([dvc.Vega(
-                            id='monthly-revenue', 
-                            spec={}
-                        )]), md=6),  
-                        dbc.Col(dbc.Container([dvc.Vega(
-                            id='country-pie-chart',
-                            signalsToObserve=["selected_country"],
-                            spec={}
-                        )]), md=6)
-            ]),
-            dbc.Row([ dbc.Col(dbc.Container([dvc.Vega(
-                            id='product-bar-chart',
-                            spec={}  
-                        )]), md=8), 
-                        dbc.Col(dbc.Container([dvc.Vega(
-                            id='waterfall-chart',
-                            spec={}
-                        )]), md=4)
-            ]),
-        ], md=9) 
-    ]),
-
-     dbc.Row([
-        dbc.Col([
-            html.Div([
-                html.P(" ", style={"font-size": "12px"}),
-                html.P("RetaiLense is an interactive dashboard designed to monitor and optimize eCommerce sales across international markets for a UK-based online retail company.",
-                       style={"font-size": "12px"}),
-                html.P("Authors: Ashita Diwan @diwanashita, Gurmehak Kaur @gurmehak, Meagan Gardner @meagangardner, and Wai Ming Wong @waiming",
-                       style={"font-size": "12px"}),
-                html.A("GitHub Repository", href="https://github.com/UBC-MDS/DSCI-532_2025_9_RetaiLense",
-                       target="_blank", style={"font-size": "12px"}),
-                html.P("Last updated on Feb 28, 2025",
-                       style={"font-size": "12px"}),
-            ])
-        ], md=12),
-    ]),
-])
 
 # Run the app
 if __name__ == '__main__':
