@@ -190,70 +190,38 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     
     # Compute Gross Revenue (sum of revenue where quantity > 0)
     gross_revenue = filtered_df.loc[filtered_df['Quantity'] > 0, 'Revenue'].sum()
-
-    # Compute Refund (sum of revenue where quantity < 0)
-    refund = filtered_df.loc[filtered_df['Quantity'] < 0, 'Revenue'].sum()
-
-    # Compute Net Revenue (Gross Revenue + Refund)
-    net_revenue = gross_revenue + refund
-
-    # Create the final DataFrame
-    working_df = pd.DataFrame({
-        'Category': ['Gross Revenue', 'Refund', 'Net Revenue'],
-        'Value': [gross_revenue, refund, net_revenue]
-    })
-
-
-    # Define explicit category order
-    category_order = working_df['Category'].tolist()
     
-    # Add an index column to enforce order
-    working_df['Index'] = range(len(working_df))  # Assign numerical order explicitly
-
-    # Convert Category column to categorical with correct order
-    working_df['Category'] = pd.Categorical(working_df['Category'], categories=category_order, ordered=True)
-
-    # Compute cumulative values properly
-    working_df['Start'] = working_df['Value'].cumsum().shift(1).fillna(0)
-    working_df['End'] = working_df['Start'] + working_df['Value']
-
-    # Force Net Revenue to start from zero
-    working_df.loc[working_df['Category'] == 'Net Revenue', 'Start'] = 0
-    working_df.loc[working_df['Category'] == 'Net Revenue', 'End'] = working_df['Value']
-
-    # Define colors
-    working_df['Color'] = working_df['Value'].apply(lambda x: 'Increase' if x > 0 else 'Decrease')
-
-    # Create a mapping of Index to Category labels
-    category_labels = {i: cat for i, cat in enumerate(working_df['Category'])}
-
-    # Create the waterfall chart
-    bars = alt.Chart(working_df).mark_bar().encode(
-        x=alt.X('Index:O', title='Category', sort=list(working_df['Index']),  
-                axis=alt.Axis(labelExpr=f"datum.value == 0 ? '{category_labels[0]}' : " +
-                                       f"datum.value == 1 ? '{category_labels[1]}' : " +
-                                       f"datum.value == 2 ? '{category_labels[2]}' : ''",
-                              labelAngle=-45)),  # Replaces 0,1,2 with actual labels
-        y=alt.Y('Start:Q', title='Revenue'),
-        y2='End:Q',
-        color=alt.Color('Color:N', scale=alt.Scale(domain=['Increase', 'Decrease'], range=['green', 'red']), legend=None),
-        tooltip=['Category', 'Value']
+    # Compute Refund (sum of revenue where quantity < 0, taking absolute value)
+    refund = abs(filtered_df.loc[filtered_df['Quantity'] < 0, 'Revenue'].sum())
+    
+    # Compute Net Revenue (Gross Revenue - Refund)
+    net_revenue = gross_revenue - refund
+    
+    # Data for stacked bar (ensuring total height is Gross Revenue)
+    working_df = pd.DataFrame({
+        'Component': ['Net Revenue', 'Refunds'],
+        'Value': [net_revenue, refund]
+    })
+    working_df['Total'] = working_df['Value'].sum()
+    
+    chart = alt.Chart(working_df).mark_bar(size=40).encode(  # Adjust size here
+        x=alt.X('Total:Q', title='Total Gross Revenue'),
+        y=alt.Y('Value:Q', title='Amount (£)'),
+        color=alt.Color('Component:N', scale=alt.Scale(domain=['Refunds', 'Net Revenue'], range=['red', 'green']),
+                        legend=alt.Legend(title='Category')
+                       ),
+        order=alt.Order('Component:N', sort='ascending'),  # Ensure correct stacking order,
+    tooltip=[
+        alt.Tooltip('Component:N', title='Category'),
+        alt.Tooltip('Value:Q', title='Amount (£)', format=",.2f")  # Format with pound symbol and commas
+    ]
+    ).properties(
+        title='Revenue Stacked Chart',
+        width=100,
+        height=300
     )
 
-    # Add text labels
-    text = alt.Chart(working_df).mark_text(dy=-10, size=12).encode(
-        x='Index:O',
-        y='End:Q',
-        text=alt.Text('Value:Q', format=',.0f')
-    )
-
-    # Combine bars and labels
-    waterfall_chart = (bars + text).properties( title="Revenue Waterfall Chart",
-                                               width='container',
-                                               height = 300
-                                               )
-
-    return waterfall_chart.to_dict()
+    return chart.to_dict()
 
 @callback(
     Output('product-bar-chart', 'spec'),
@@ -423,14 +391,14 @@ def update_cards(start_date, end_date, selected_countries):
     # Calculate the loyal customer sales
     non_blank_customer_ids = filtered_df[filtered_df['CustomerID'].notna()]
     total_sales = non_blank_customer_ids['Revenue'].sum()
-    loyal_customer_sales_value = f"${total_sales:,.2f}"
+    loyal_customer_sales_value = f"£{total_sales:,.2f}"
 
     # Calculate net sales
-    net_sales_value = f"${filtered_df['Revenue'].sum():,.2f}"
+    net_sales_value = f"£{filtered_df['Revenue'].sum():,.2f}"
 
     # Calculate total returns
     returns = filtered_df[filtered_df['Revenue'] < 0]
-    total_returns_value = f"${returns['Revenue'].sum():,.2f}"
+    total_returns_value = f"£{returns['Revenue'].sum():,.2f}"
 
     # Create the content for each card
     card_loyal_customer_ratio_content = [
