@@ -172,7 +172,7 @@ app.layout = dbc.Container(
             country_dropdown,
         ]), md=3, # Country dropdown on the left (adjust width)
         style={
-            'backgroundColor': '#3D5F74',
+            'backgroundColor': '#809DAF',
             'padding': '20px',
             # 'borderRadius': '10px',
             'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
