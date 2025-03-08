@@ -114,26 +114,26 @@ cards_layout = dbc.Row(
 product_bar_chart = dvc.Vega(
     id='product-bar-chart',
     spec={},
-    style={'width': '100%'}
+    style={'width': '100%', 'marginTop': '20px'}
     )
 
 country_pie_chart = dvc.Vega(
     id='country-pie-chart',
     signalsToObserve=["selected_country"],
     spec={},
-    style={'width': '100%'}
+    style={'width': '100%', 'marginTop': '20px'}
     )
 
 stacked_chart = dvc.Vega(
     id='stacked-chart',
     spec={},
-    style={'width': '100%'}
+    style={'width': '100%', 'marginTop': '20px'}
     )
 
 monthly_revenue_chart = dvc.Vega(
     id='monthly-revenue', 
     spec={},
-    style={'width': '100%'}
+    style={'width': '100%', 'marginTop': '20px'}
     )
 
 # Layout
