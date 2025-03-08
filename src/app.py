@@ -180,7 +180,7 @@ app.layout = dbc.Container(
             html.Label('Select Countries', 
                        style={
                            'color': 'white',
-                           'marginTop': '30px'
+                           'marginTop': '30px',
                            'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
