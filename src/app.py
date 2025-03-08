@@ -202,8 +202,8 @@ app.layout = dbc.Container(
                 dbc.Col(dbc.Container([stacked_chart], fluid=True), md=3)
             ]),
             dbc.Row([
-                dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=8),
-                dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=4)
+                dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=9),
+                dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=3)
             ]),
         ], md=9) 
     ]),
