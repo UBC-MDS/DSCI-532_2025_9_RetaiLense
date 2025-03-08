@@ -212,7 +212,9 @@ app.layout = dbc.Container(
         ], md=9,
         style={'marginRight': '0', 'paddingRight': '0'}
         ) 
-    ]),
+    ],
+    style={'marginRight': '0', 'paddingRight': '0'}
+    ),
 
      dbc.Row([
         dbc.Col([
