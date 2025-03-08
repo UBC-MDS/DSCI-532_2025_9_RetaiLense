@@ -148,7 +148,7 @@ app.layout = dbc.Container(
     dbc.Row(dbc.Col(html.H1(
         'RetaiLense',
         style={
-            'backgroundColor': '#034168',
+            'backgroundColor': '#1E3A4C',
             'color': 'white',             
             'padding': '5px',
             # 'borderRadius': '5px',
@@ -172,7 +172,7 @@ app.layout = dbc.Container(
             country_dropdown,
         ]), md=3, # Country dropdown on the left (adjust width)
         style={
-            'backgroundColor': '#67879B',
+            'backgroundColor': '#3D5F74',
             'padding': '20px',
             # 'borderRadius': '10px',
             'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
