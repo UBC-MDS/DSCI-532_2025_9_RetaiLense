@@ -162,12 +162,18 @@ app.layout = dbc.Container(
         dbc.Col(dbc.Row([
             html.Label('Date Range:',
                        style={
-                           'color': 'white'
-                           }),
+                           'color': 'white',
+                           'fontSize': '18px', 
+                           'fontWeight': 'bold', 
+                           'fontFamily': 'inherit' # to match header font
+                            }),
             date_picker_range,
             html.Label('Select Countries:', 
                        style={
-                           'color': 'white'
+                           color': 'white',
+                           'fontSize': '18px', 
+                           'fontWeight': 'bold', 
+                           'fontFamily': 'inherit' # to match header font
                            }),
             country_dropdown,
         ]), md=3, # Country dropdown on the left (adjust width)
