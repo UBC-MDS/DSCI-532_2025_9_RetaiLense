@@ -163,7 +163,7 @@ app.layout = dbc.Container(
             html.Label('Filters',
                        style={
                            'color': 'white',
-                           'marginTop': '40px'
+                           'marginTop': '40px',
                            'fontSize': '22px', 
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
@@ -171,7 +171,7 @@ app.layout = dbc.Container(
             html.Label('Date Range',
                        style={
                            'color': 'white',
-                           'marginTop': '30px'
+                           'marginTop': '30px',
                            'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
