@@ -91,9 +91,15 @@ app.layout = dbc.Container([
 
     dbc.Row([
         dbc.Col(dbc.Row([
-            html.Label('Date Range:'),
+            html.Label('Date Range:',
+                       style={
+                           'color': 'white'
+                           }),
             date_picker_range,
-            html.Label('Select Countries:'),
+            html.Label('Select Countries:', 
+                       style={
+                           color:'white'
+                           }),
             country_dropdown,
         ]), md=3, # Country dropdown on the left (adjust width)
         style={
