@@ -84,7 +84,8 @@ app.layout = dbc.Container([
             'color': 'white',             
             # 'padding': '10px',
             # 'borderRadius': '5px',
-            'textAlign': 'center'
+            'textAlign': 'center',
+            'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
     }
         ))),
 
@@ -98,7 +99,7 @@ app.layout = dbc.Container([
         style={
             'backgroundColor': '#67879B',
             'padding': '20px',
-            'borderRadius': '10px',
+            # 'borderRadius': '10px',
             'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
             }
         ),  
