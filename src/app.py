@@ -201,14 +201,15 @@ app.layout = dbc.Container(
             # Cards in a grid layout
             cards_layout,
             dbc.Row([
-                dbc.Col(dbc.Container([monthly_revenue_chart], fluid=True), md=9), 
-                dbc.Col(dbc.Container([stacked_chart], fluid=True), md=3)
+                dbc.Col(dbc.Container([monthly_revenue_chart], fluid=True), md=8), 
+                dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=4)
             ],
             style={'marginRight': '0', 'paddingRight': '0'}
             ),
             dbc.Row([
-                dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=9),
-                dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=3)
+                dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=6),
+                dbc.Col(dbc.Container([stacked_chart], fluid=True), md=6)
+                
             ],
             style={'marginRight': '0', 'paddingRight': '0'}
             ),
