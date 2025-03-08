@@ -73,7 +73,7 @@ monthly_revenue_chart = dvc.Vega(
 
 # Layout
 
-app.layout = dbc.Container([
+app.layout = dbc.Container(
     fluid=True,  # Make the container fluid to span the full width
     style={'padding': '0'},  # Remove default padding 
     children=[
