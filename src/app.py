@@ -209,7 +209,7 @@ app.layout = dbc.Container(
             ],
             style={'marginRight': '0', 'paddingRight': '0'}
             ),
-        ], md=9,
+        ], md=10,
         style={'marginRight': '0', 'paddingRight': '0'}
         ) 
     ],
