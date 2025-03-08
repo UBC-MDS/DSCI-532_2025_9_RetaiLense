@@ -59,8 +59,8 @@ country_pie_chart = dvc.Vega(
     style={'width': '100%'}
     )
 
-waterfall_chart = dvc.Vega(
-    id='waterfall-chart',
+stacked_chart = dvc.Vega(
+    id='stacked-chart',
     spec={},
     style={'width': '100%'}
     )
@@ -100,7 +100,7 @@ app.layout = dbc.Container([
             ]),
             dbc.Row([
                 dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=8),
-                dbc.Col(dbc.Container([waterfall_chart], fluid=True), md=4)
+                dbc.Col(dbc.Container([stacked_chart], fluid=True), md=4)
             ]),
         ], md=9) 
     ]),
@@ -154,8 +154,11 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         x=alt.X('MonthYear:N', 
                 sort=pd.to_datetime(filtered_df['MonthYear'].unique(), format='%b-%Y').sort_values().strftime('%b-%Y').tolist(), 
                 title='Month-Year'),
-        y=alt.Y('Revenue:Q', title='Total Revenue'),
-        tooltip=['MonthYear:N', 'Revenue:Q']
+        y=alt.Y('Revenue:Q', title='Total Revenue (£)'),
+        tooltip=[  # Format tooltip values with commas
+            alt.Tooltip('MonthYear:N', title='Month-Year'),
+            alt.Tooltip('Revenue:Q', title='Total Revenue (£)', format=",.0f")
+        ]
     ).properties(
         title='Monthly Revenue Trend',
         width='container',
@@ -166,14 +169,14 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
 
 # Define the function to create the pie chart (as you already have it)
 @callback(
-    Output('waterfall-chart', 'spec'),
+    Output('stacked-chart', 'spec'),
     Input('date-picker-range', 'start_date'),
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
-def plot_waterfall_chart(start_date, end_date, selected_countries):
+def plot_stacked_chart(start_date, end_date, selected_countries):
     """
-    Creates a waterfall chart showing Gross Revenue, Refunds, and Net Revenue.
+    Creates a stacked chart showing Gross Revenue, Refunds, and Net Revenue.
 
     Parameters:
     - start_date (str): The start date selected in the date picker.
@@ -207,7 +210,7 @@ def plot_waterfall_chart(start_date, end_date, selected_countries):
     chart = alt.Chart(working_df).mark_bar(size=40).encode(  # Adjust size here
         x=alt.X('Total:Q', title='Total Gross Revenue'),
         y=alt.Y('Value:Q', title='Amount (£)'),
-        color=alt.Color('Component:N', scale=alt.Scale(domain=['Refunds', 'Net Revenue'], range=['red', 'green']),
+        color=alt.Color('Component:N', scale=alt.Scale(domain=['Refunds', 'Net Revenue'], range=['#fbb4ae', '#ccebc5']),
                         legend=alt.Legend(title='Category')
                        ),
         order=alt.Order('Component:N', sort='ascending'),  # Ensure correct stacking order,
@@ -260,9 +263,12 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     # plot the bar chart
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
-        y=alt.Y('Description:N', sort='-x', title='Product Description'),
-        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel2'), legend=None),
-        tooltip=['Description', 'Revenue']
+        y=alt.Y('Description:N', sort='-x', title='Description'),
+        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel1'), legend=None),
+        tooltip=[  # Format tooltip values with commas
+            alt.Tooltip('Description:N', title='Description'),
+            alt.Tooltip('Revenue:Q', title='Revenue (£)', format=",.0f")
+        ]
     ).properties(
         title=f'Top {n_products} Products by Revenue',
         width='container',
