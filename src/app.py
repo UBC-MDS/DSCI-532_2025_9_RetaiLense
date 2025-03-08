@@ -166,25 +166,30 @@ app.layout = dbc.Container(
                            'color': 'white',
                            'marginTop': '30px',
                            'marginLeft': '10px',
+
                            'fontSize': '22px', 
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
+
             html.Label('   Date Range',
                        style={
                            'color': 'white',
                            'marginTop': '30px',
                            'marginLeft': '10px',
+
                            'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
             date_picker_range,
+
             html.Label('  Country', 
                        style={
                            'color': 'white',
                            'marginTop': '20px',
                            'marginLeft': '10px',
+
                            'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
@@ -193,7 +198,9 @@ app.layout = dbc.Container(
         ]), md=2, # Country dropdown on the left (adjust width)
         style={
             'backgroundColor': '#809DAF', 
+
             'padding': '10px',
+
             # 'borderRadius': '10px',
             'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
             }
