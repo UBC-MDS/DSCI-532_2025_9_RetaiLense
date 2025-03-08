@@ -148,7 +148,7 @@ app.layout = dbc.Container(
     dbc.Row(dbc.Col(html.H1(
         'RetaiLense',
         style={
-            'backgroundColor': '#1F3B4D',
+            'backgroundColor': '#034168',
             'color': 'white',             
             'padding': '5px',
             # 'borderRadius': '5px',
@@ -481,7 +481,7 @@ def update_cards(start_date, end_date, selected_countries):
         loyal_customers_ratio = loyal_customers / total_unique_customers
     loyal_customer_ratio_value = html.Span(
         f"{round(loyal_customers_ratio * 100, 2)}%",
-        style={'color': '#9CB4C3', 'fontWeight': 'bold'}  # Light blue and bold
+        style={'color': '#034168', 'fontWeight': 'bold'}  # Light blue and bold
     )
 
     # Calculate the loyal customer sales
@@ -489,20 +489,20 @@ def update_cards(start_date, end_date, selected_countries):
     total_sales = non_blank_customer_ids['Revenue'].sum()
     loyal_customer_sales_value = html.Span(
         f"£{total_sales:,.2f}",
-        style={'color': '#9CB4C3', 'fontWeight': 'bold'}  # Light blue and bold
+        style={'color': '#034168', 'fontWeight': 'bold'}  # Light blue and bold
     )
 
     # Calculate net sales
     net_sales_value = html.Span(
         f"£{filtered_df['Revenue'].sum():,.2f}",
-        style={'color': '#9CB4C3', 'fontWeight': 'bold'}  # Light blue and bold
+        style={'color': '#034168', 'fontWeight': 'bold'}  # Light blue and bold
     )
 
     # Calculate total returns
     returns = filtered_df[filtered_df['Revenue'] < 0]
     total_returns_value = html.Span(
         f"£{returns['Revenue'].sum():,.2f}",
-        style={'color': '#fbb4ae', 'fontWeight': 'bold'}  # Red and bold
+        style={'color': '#9A2A2A', 'fontWeight': 'bold'}  # Red and bold
     )
 
     # Create the content for each card
