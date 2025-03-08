@@ -141,7 +141,7 @@ monthly_revenue_chart = dvc.Vega(
 
 app.layout = dbc.Container(
     fluid=True,  # Make the container fluid to span the full width
-    style={'padding': '0'},  # Remove default padding 
+    style={'padding': '0', 'margin': '0'},  # Remove default padding 
     children=[
         dcc.Store(id='selected-country-store', data=None),
         dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
@@ -200,12 +200,18 @@ app.layout = dbc.Container(
             dbc.Row([
                 dbc.Col(dbc.Container([monthly_revenue_chart], fluid=True), md=9), 
                 dbc.Col(dbc.Container([stacked_chart], fluid=True), md=3)
-            ]),
+            ],
+            style={'marginRight': '0', 'paddingRight': '0'}
+            ),
             dbc.Row([
                 dbc.Col(dbc.Container([product_bar_chart], fluid=True), md=9),
                 dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=3)
-            ]),
-        ], md=9) 
+            ],
+            style={'marginRight': '0', 'paddingRight': '0'}
+            ),
+        ], md=9,
+        style={'marginRight': '0', 'paddingRight': '0'}
+        ) 
     ]),
 
      dbc.Row([
