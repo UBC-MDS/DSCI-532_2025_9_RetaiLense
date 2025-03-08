@@ -164,6 +164,7 @@ app.layout = dbc.Container(
                        style={
                            'color': 'white',
                            'marginTop': '30px',
+                           'marginLeft': '5px',
                            'fontSize': '22px', 
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
@@ -172,6 +173,7 @@ app.layout = dbc.Container(
                        style={
                            'color': 'white',
                            'marginTop': '30px',
+                           'marginLeft': '5px',
                            'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
