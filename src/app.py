@@ -95,7 +95,16 @@ app.layout = dbc.Container([
             date_picker_range,
             html.Label('Select Countries:'),
             country_dropdown,
-        ]), md=3),  # Country dropdown on the left (adjust width)
+        ]), md=3, # Country dropdown on the left (adjust width)
+        style={
+            'backgroundColor': '#67879B',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)',
+            'marginRight': '20px'
+    }
+)
+        ),  
         dbc.Col([
             # Cards in a grid layout
             dbc.Row([
