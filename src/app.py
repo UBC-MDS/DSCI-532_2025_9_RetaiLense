@@ -163,14 +163,16 @@ app.layout = dbc.Container(
             html.Label('Filters',
                        style={
                            'color': 'white',
-                           'fontSize': '19px', 
+                           'marginTop': '40px'
+                           'fontSize': '22px', 
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
-                       'Date Range',
+            html.Label('Date Range',
                        style={
                            'color': 'white',
-                           'fontSize': '14px', 
+                           'marginTop': '30px'
+                           'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
@@ -178,7 +180,8 @@ app.layout = dbc.Container(
             html.Label('Select Countries', 
                        style={
                            'color': 'white',
-                           'fontSize': '14px', 
+                           'marginTop': '30px'
+                           'fontSize': '18px', 
                         #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                            }),
