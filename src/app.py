@@ -149,6 +149,7 @@ app.layout = dbc.Container(
         'RetaiLense',
         style={
             'backgroundColor': '#1E3A4C',
+
             'color': 'white',             
             'padding': '5px',
             # 'borderRadius': '5px',
