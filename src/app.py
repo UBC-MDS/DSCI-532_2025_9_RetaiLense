@@ -160,7 +160,7 @@ app.layout = dbc.Container(
 
     dbc.Row([
         dbc.Col(dbc.Row([
-            html.Label('Filters',
+            html.Label('   Filters',
                        style={
                            'color': 'white',
                            'marginTop': '30px',
@@ -168,7 +168,7 @@ app.layout = dbc.Container(
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
-            html.Label('Date Range',
+            html.Label('   Date Range',
                        style={
                            'color': 'white',
                            'marginTop': '30px',
@@ -177,7 +177,7 @@ app.layout = dbc.Container(
                            'fontFamily': 'inherit' # to match header font
                             }),
             date_picker_range,
-            html.Label('Select Countries', 
+            html.Label('  Country', 
                        style={
                            'color': 'white',
                            'marginTop': '20px',
