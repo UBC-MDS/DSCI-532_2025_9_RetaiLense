@@ -160,19 +160,26 @@ app.layout = dbc.Container(
 
     dbc.Row([
         dbc.Col(dbc.Row([
-            html.Label('Date Range:',
+            html.Label('Filters',
                        style={
                            'color': 'white',
-                           'fontSize': '18px', 
+                           'fontSize': '19px', 
                            'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                             }),
-            date_picker_range,
-            html.Label('Select Countries:', 
+                       'Date Range',
                        style={
                            'color': 'white',
-                           'fontSize': '18px', 
-                           'fontWeight': 'bold', 
+                           'fontSize': '14px', 
+                        #    'fontWeight': 'bold', 
+                           'fontFamily': 'inherit' # to match header font
+                            }),
+            date_picker_range,
+            html.Label('Select Countries', 
+                       style={
+                           'color': 'white',
+                           'fontSize': '14px', 
+                        #    'fontWeight': 'bold', 
                            'fontFamily': 'inherit' # to match header font
                            }),
             country_dropdown,
