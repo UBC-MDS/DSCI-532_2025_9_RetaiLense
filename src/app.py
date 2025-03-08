@@ -38,13 +38,74 @@ country_dropdown = dcc.Dropdown(
     style={ 'padding': '20px'}
     )
 
-card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
+# card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
 
-card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
+# card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
 
-card_net_sales = dbc.Card(id='card-net-sales')
+# card_net_sales = dbc.Card(id='card-net-sales')
 
-card_total_returns = dbc.Card(id='card-total-returns')
+# card_total_returns = dbc.Card(id='card-total-returns')
+
+# Cards with styling
+card_loyal_customer_ratio = dbc.Card(
+    id='card-loyal-customer-ratio',
+    style={
+        'backgroundColor': '#9CB4C3',  # Light blue color
+        'textAlign': 'center',         # Center-align text horizontally
+        'display': 'flex',             # Enable flexbox for vertical centering
+        'alignItems': 'center',        # Center-align text vertically
+        'justifyContent': 'center',    # Center-align text horizontally
+        'height': '100%'               # Ensure the card fills the height
+    }
+)
+
+card_loyal_customer_sales = dbc.Card(
+    id='card-loyal-customer-sales',
+    style={
+        'backgroundColor': '#9CB4C3',  # Light blue color
+        'textAlign': 'center',         # Center-align text horizontally
+        'display': 'flex',             # Enable flexbox for vertical centering
+        'alignItems': 'center',        # Center-align text vertically
+        'justifyContent': 'center',    # Center-align text horizontally
+        'height': '100%'               # Ensure the card fills the height
+    }
+)
+
+card_net_sales = dbc.Card(
+    id='card-net-sales',
+    style={
+        'backgroundColor': '#9CB4C3',  # Light blue color
+        'textAlign': 'center',         # Center-align text horizontally
+        'display': 'flex',             # Enable flexbox for vertical centering
+        'alignItems': 'center',        # Center-align text vertically
+        'justifyContent': 'center',    # Center-align text horizontally
+        'height': '100%'               # Ensure the card fills the height
+    }
+)
+
+card_total_returns = dbc.Card(
+    id='card-total-returns',
+    style={
+        'backgroundColor': '#fbb4ae',  # Red color (same as refunds)
+        'textAlign': 'center',         # Center-align text horizontally
+        'display': 'flex',             # Enable flexbox for vertical centering
+        'alignItems': 'center',        # Center-align text vertically
+        'justifyContent': 'center',    # Center-align text horizontally
+        'height': '100%'               # Ensure the card fills the height
+    }
+)
+
+# Layout for the cards
+cards_layout = dbc.Row(
+    [
+        dbc.Col(card_loyal_customer_ratio, md=3),
+        dbc.Col(card_loyal_customer_sales, md=3),
+        dbc.Col(card_net_sales, md=3),
+        dbc.Col(card_total_returns, md=3)
+    ],
+    style={'marginTop': '20px'}  # Add 20px space above the cards
+)
+
 
 product_bar_chart = dvc.Vega(
     id='product-bar-chart',
@@ -115,12 +176,7 @@ app.layout = dbc.Container(
         ),  
         dbc.Col([
             # Cards in a grid layout
-            dbc.Row([
-                dbc.Col(card_loyal_customer_ratio), 
-                dbc.Col(card_loyal_customer_sales),
-                dbc.Col(card_net_sales),
-                dbc.Col(card_total_returns)
-            ]),
+            cards_layout,
             dbc.Row([
                 dbc.Col(dbc.Container([monthly_revenue_chart], fluid=True), md=6), 
                 dbc.Col(dbc.Container([country_pie_chart], fluid=True), md=6), 
