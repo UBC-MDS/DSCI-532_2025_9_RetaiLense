@@ -74,8 +74,11 @@ monthly_revenue_chart = dvc.Vega(
 # Layout
 
 app.layout = dbc.Container([
-    dcc.Store(id='selected-country-store', data=None),
-    dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
+    fluid=True,  # Make the container fluid to span the full width
+    style={'padding': '0'},  # Remove default padding 
+    children=[
+        dcc.Store(id='selected-country-store', data=None),
+        dcc.Store(id='other-countries-store', data=[]),  # Stores list of "Others" countries
 
     dbc.Row(dbc.Col(html.H1(
         'RetaiLense',
@@ -85,7 +88,8 @@ app.layout = dbc.Container([
             'padding': '5px',
             # 'borderRadius': '5px',
             'textAlign': 'center',
-            'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)'
+            'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)',
+            'marginBottom': '0' 
     }
         ))),
 
