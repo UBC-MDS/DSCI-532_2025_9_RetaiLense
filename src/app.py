@@ -102,8 +102,7 @@ app.layout = dbc.Container([
             'borderRadius': '10px',
             'boxShadow': '2px 2px 10px rgba(0, 0, 0, 0.1)',
             'marginRight': '20px'
-    }
-)
+            }
         ),  
         dbc.Col([
             # Cards in a grid layout
