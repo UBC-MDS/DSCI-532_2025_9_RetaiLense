@@ -42,7 +42,7 @@ conda activate retailense
 
 ### 3. Render the dashboard locally
 ```bash         
-python src/app.py
+python -m src.app
 ```
 
 ### 4. Click on the link from the output or copy and paste it into a browser to view the dashboard
