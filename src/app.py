@@ -9,10 +9,11 @@ app = Dash(
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     title='RetaiLense Dashboard'
 )
+server = app.server
 
 # Layout
 app.layout = layout
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
