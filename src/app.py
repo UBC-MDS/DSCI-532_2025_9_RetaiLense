@@ -113,7 +113,7 @@ app.layout = dbc.Container(
                     'padding': '20px',  # Add padding
                 })
             ], md=12),
-        ]
+        ],
         style={'marginTop': '20px'} 
         ),
     ]
