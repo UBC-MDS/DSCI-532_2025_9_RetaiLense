@@ -221,7 +221,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     )
 
     text = pie_chart.mark_text(
-        size=14, fontWeight='bold', color='black', radius=150
+        size=10, fontWeight='bold', color='black', radius=140
     ).encode(
         text=alt.Text('Country:N'),  # Show country names
     )
