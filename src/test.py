@@ -1,19 +1,18 @@
 from dash import Dash
 import dash_bootstrap_components as dbc
-from layout import create_layout
-from data import load_data
-from callbacks import register_callbacks
+from components import layout
+import callbacks  # This import is necessary to register the callbacks
 
-df = load_data()
+# Initialization
+app = Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    title='RetaiLense Dashboard'
+)
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server
-app.title = "Monthly Revenue Dashboard"
+# Layout
+app.layout = layout
 
-app.layout = create_layout(df)
-
-# Register callbacks
-register_callbacks(app)
-
+# Run the app
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
