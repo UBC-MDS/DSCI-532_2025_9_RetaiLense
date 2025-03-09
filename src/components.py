@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc, dash_table
 
 from data import df
+import callbacks 
 
 
 #Component
@@ -23,13 +24,6 @@ country_dropdown = dcc.Dropdown(
     style={ 'padding': '20px'}
     )
 
-# card_loyal_customer_ratio = dbc.Card(id='card-loyal-customer-ratio')
-
-# card_loyal_customer_sales = dbc.Card(id='card-loyal-customer-sales')
-
-# card_net_sales = dbc.Card(id='card-net-sales')
-
-# card_total_returns = dbc.Card(id='card-total-returns')
 
 # Cards with styling
 card_loyal_customer_ratio = dbc.Card(
