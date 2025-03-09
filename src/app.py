@@ -104,7 +104,7 @@ app.layout = dbc.Container(
                 ],
                 style={
                     'textAlign': 'center',  # Center-align text horizontally
-                    'display': 'flex',      # Use flexbox for layout
+                    # 'display': 'flex',      # Use flexbox for layout
                     # 'flexDirection': 'column',  # Stack children vertically
                     'alignItems': 'center',  # Center-align children horizontally
                     'justifyContent': 'center',  # Center-align children vertically
@@ -113,7 +113,9 @@ app.layout = dbc.Container(
                     'padding': '20px',  # Add padding
                 })
             ], md=12),
-        ]),
+        ]
+        style={'marginTop': '20px'} 
+        ),
     ]
 )
 
