@@ -4,7 +4,6 @@ import dash_vega_components as dvc
 import pandas as pd
 import altair as alt
 
-from data import df
 
 # Create Dash app
 app = Dash(__name__, 
@@ -12,7 +11,14 @@ app = Dash(__name__,
 server = app.server
 app.title = "Monthly Revenue Dashboard"
 
+# Read CSV file 
+df = pd.read_csv('data/processed/processed_data.csv')
 
+# Ensure 'InvoiceDate' is converted to datetime format
+df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+
+# Create Month-Year column
+df['MonthYear'] = df['InvoiceDate'].dt.strftime('%b-%Y')
 
 
 #Component
