@@ -12,9 +12,9 @@ Our dashboard still follows our app original design, however with a few modifica
 -   Updated title and sidebar styling
 -   Updated chart colours to align with each other
 -   Updated formatting on display cards
--   **Challenging question attempt:** 
-        -   DSCI-532_2025_17_pharma_spend_dashboard(https://github.com/UBC-MDS/DSCI-532_2025_17_pharma_spend_dashboard): We really liked the horizontal bar/lines between filters in this dashboard. It provides structured look to the dashboard and helps better distinguish between filters. We have incorporated this in our dashboard.
-        -   DSCI-532_2025_27_CA_Wildfire-Dashboard (https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard): We have center aligned the "About" section in our dashboard. Our dashboard looks cleaner this way. 
+-   **Challenging question attempt:**
+-           [DSCI-532_2025_17_pharma_spend_dashboard](https://github.com/UBC-MDS/DSCI-532_2025_17_pharma_spend_dashboard): We really liked the horizontal bar/lines between filters in this dashboard. It provides structured look to the dashboard and helps better distinguish between filters. We have incorporated this in our dashboard.
+-       [DSCI-532_2025_27_CA_Wildfire-Dashboard](https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard): We have center aligned the "About" section in our dashboard. Our dashboard looks cleaner this way. 
 
 
 ## Deviations from the Original Sketch
