@@ -111,6 +111,7 @@ app.layout = dbc.Container(
                     'margin': '0 auto',  # Center the div itself horizontally
                     # 'maxWidth': '800px',  # width of the description
                     # 'padding': '20px',  # Add padding
+                    'paddingLeft': '20x'
                 })
             ], md=12),
         ],
