@@ -17,7 +17,6 @@ app = Dash(
     title='RetaiLense Dashboard'
 )
 server = app.server
-app.title = "Monthly Revenue Dashboard"
 
 # Layout
 app.layout = dbc.Container(
@@ -113,4 +112,4 @@ app.layout = dbc.Container(
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run()
