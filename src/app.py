@@ -42,7 +42,7 @@ app.layout = dbc.Container(
                                'fontWeight': 'bold', 
                                'fontFamily': 'inherit' # to match header font
                                 }),
-                                html.Hr(style={'borderBottom': '1px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
+                                html.Hr(style={'borderBottom': '2px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
 
                 html.Label('   Date Range',
                            style={
@@ -53,7 +53,7 @@ app.layout = dbc.Container(
                                'fontFamily': 'inherit' # to match header font
                                 }),
                 date_picker_range,
-                html.Hr(style={'borderBottom': '1px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
+                html.Hr(style={'borderBottom': '2px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
                 html.Label('  Country', 
                            style={
                                'color': 'white',
@@ -63,7 +63,7 @@ app.layout = dbc.Container(
                                'fontFamily': 'inherit' # to match header font
                                }),
                 country_dropdown,
-                html.Hr(style={'borderBottom': '1px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
+                html.Hr(style={'borderBottom': '2px solid white', 'margin': '9px auto', 'width': '80%'}), # horizontal line 
             ]), md=2, # Country dropdown on the left (adjust width)
             style={
                 'backgroundColor': '#809DAF', 
