@@ -1,7 +1,7 @@
 from dash import Output, Input, callback, html
 import pandas as pd
 import altair as alt
-from data import df
+from .data import df
 import dash_bootstrap_components as dbc
 
 @callback(
