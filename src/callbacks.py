@@ -202,7 +202,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     # Create an Altair selection object for clicking on the pie slices
     selection = alt.selection_point(fields=['Country'], 
                                     nearest= False, 
-                                    empty="none",
+                                    empty=False,
                                     name="selected_country")
 
     # Create the Altair pie chart with percentages
@@ -267,7 +267,7 @@ def update_cards(start_date, end_date, selected_countries):
     non_loyal_customers = filtered_df[filtered_df['CustomerID'].isna()]
     total_non_loyal_customers = non_loyal_customers['InvoiceNo'].nunique()  # Count unique InvoiceNo for non-loyal customers
     total_unique_customers = loyal_customers + total_non_loyal_customers
-    
+
     if total_unique_customers == 0:
         loyal_customers_ratio = 0
     else:
@@ -404,7 +404,4 @@ def update_country_dropdown(selected_country, other_countries):
     if selected_country == "Others":
         return other_countries  # Set dropdown to all "Others" countries
     
-    if selected_country:
-        return [selected_country]  # Ensure it's a list (Dropdown expects a list)
-    
-    return ['United Kingdom']  # Default selection
+    return [selected_country] # Ensure it's a list (Dropdown expects a list)
