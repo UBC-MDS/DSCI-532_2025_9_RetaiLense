@@ -133,16 +133,16 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         (df['Country'].isin(selected_countries))
     ]
     
-    # Add new column to store the first three words of Description
-    filtered_df['ProductName'] = filtered_df['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
-
     # group description by revenue then get the top products
     product_revenue = (filtered_df
-        .groupby('ProductName')['Revenue']
+        .groupby('Description')['Revenue']
         .sum()
         .sort_values(ascending=False)
         .head(n_products)
         .reset_index())
+    
+    # Add new column to store the first three words of Description
+    product_revenue['ProductName'] = product_revenue['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
     
     # plot the bar chart
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
