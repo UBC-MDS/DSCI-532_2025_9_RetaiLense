@@ -138,7 +138,7 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
 
     # group description by revenue then get the top products
     product_revenue = (filtered_df
-        .groupby('Description')['Revenue']
+        .groupby('ProductName')['Revenue']
         .sum()
         .sort_values(ascending=False)
         .head(n_products)
