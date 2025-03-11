@@ -134,7 +134,10 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     ]
     
     # Add new column to store the first three words of Description
-    filtered_df['ProductName'] = filtered_df['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
+    filtered_df = filtered_df.copy()  
+    filtered_df.loc[:, 'ProductName'] = (
+        filtered_df['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
+    )
 
     # group description by revenue then get the top products
     product_revenue = (filtered_df
