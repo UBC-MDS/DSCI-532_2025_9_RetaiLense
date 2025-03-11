@@ -148,7 +148,7 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
         y=alt.Y('ProductName:N', sort='-x', title='Product Name'),
-        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel1'), legend=None),
+        color=alt.Color('ProductName:N', scale=alt.Scale(scheme='pastel1'), legend=None),
         tooltip=[  # Format tooltip values with commas
             alt.Tooltip('Description:N', title='Description'),
             alt.Tooltip('Revenue:Q', title='Revenue (£)', format=",.0f")
