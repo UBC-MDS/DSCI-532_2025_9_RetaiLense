@@ -1,9 +1,10 @@
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
+
 from .data import df
 from .components import date_picker_range, country_dropdown, cards_layout, product_bar_chart, country_pie_chart, stacked_chart, monthly_revenue_chart
 from . import callbacks
-# from .callbacks import plot_monthly_revenue_chart, plot_stacked_chart, plot_top_countries_pie_chart, plot_top_products_revenue, update_cards, compute_other_countries, store_selected_country, update_country_dropdown
+
 
 # Initialization
 app = Dash(
@@ -104,13 +105,9 @@ app.layout = dbc.Container(
                 ],
                 style={
                     'textAlign': 'center',  # Center-align text horizontally
-                    # 'display': 'flex',      # Use flexbox for layout
-                    # 'flexDirection': 'column',  # Stack children vertically
                     'alignItems': 'center',  # Center-align children horizontally
                     'justifyContent': 'center',  # Center-align children vertically
                     'margin': '0 auto',  # Center the div itself horizontally
-                    # 'maxWidth': '800px',  # width of the description
-                    # 'padding': '20px',  # Add padding
                     'paddingLeft': '20x'
                 })
             ], md=12),
