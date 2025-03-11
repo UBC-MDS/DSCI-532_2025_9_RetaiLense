@@ -367,7 +367,7 @@ def store_selected_country(signalData):
     - str or None: The name of the selected country if a valid selection was made, 
                    otherwise None.
     """
-    print(signalData)  # Debugging output
+    print(f'store_selected_country {signalData}')  # Debugging output
     
     if signalData and "selected_country" in signalData:
         selected_data = signalData["selected_country"]
@@ -383,9 +383,10 @@ def store_selected_country(signalData):
 @callback(
     Output('country-dropdown', 'value'),
     Input('selected-country-store', 'data'),  # Read from stored selection
-    Input('other-countries-store', 'data')  # Read from stored "Others" countries
+    Input('other-countries-store', 'data'),  # Read from stored "Others" countries
+    Input('country-dropdown', 'value')
 )
-def update_country_dropdown(selected_country, other_countries):
+def update_country_dropdown(selected_country, other_countries, dropdown_value):
     """
     Updates the country dropdown based on the selected country from the pie chart.
     If "Others" is clicked, it updates the dropdown with all non-top-5 countries.
@@ -401,6 +402,9 @@ def update_country_dropdown(selected_country, other_countries):
     """
     print(f"Dropdown Updated: {selected_country}")  # Debugging output
     
+    if selected_country is None:
+        return dropdown_value
+
     if selected_country == "Others":
         return other_countries  # Set dropdown to all "Others" countries
     
