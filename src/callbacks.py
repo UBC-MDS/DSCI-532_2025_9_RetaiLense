@@ -2,6 +2,7 @@ from dash import Output, Input, callback, html
 import pandas as pd
 import altair as alt
 import dash_bootstrap_components as dbc
+from textwrap import wrap
 
 from .data import df
 
@@ -141,14 +142,18 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         .head(n_products)
         .reset_index())
     
-    # Add new column to store the first three words of Description
-    product_revenue['ProductName'] = product_revenue['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
-    
+
+    # Wrap on whitespace with a max line length of 30 chars
+    product_revenue['Description'] = product_revenue['Description'].apply(wrap, args=[30])
+
     # plot the bar chart
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
-        y=alt.Y('ProductName:N', sort='-x', title='Product Name'),
-        color=alt.Color('ProductName:N', scale=alt.Scale(scheme='pastel1'), legend=None),
+        y=alt.Y('Description:N', 
+                sort='-x', 
+                title='Product Name', 
+                axis=alt.Axis(labelAlign="left", labelPadding=175, labelFontSize=9)),
+        color=alt.Color('Description:N', scale=alt.Scale(scheme='pastel1'), legend=None),
         tooltip=[  # Format tooltip values with commas
             alt.Tooltip('Description:N', title='Description'),
             alt.Tooltip('Revenue:Q', title='Revenue (£)', format=",.0f")
@@ -201,7 +206,6 @@ def plot_top_countries_pie_chart(start_date, end_date):
     others_row = pd.DataFrame({'Country': ['Others'], 'Count': [total_count - top_countries['Count'].sum()], 'Percentage': [others_percentage]})
     final_data = pd.concat([top_countries, others_row], ignore_index=True)
     
-
 
     # Create an Altair selection object for clicking on the pie slices
     selection = alt.selection_point(fields=['Country'], 
