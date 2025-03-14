@@ -6,6 +6,12 @@ from .data import df
 from .components import date_picker_range, country_dropdown, cards_layout, product_bar_chart, country_pie_chart, stacked_chart, monthly_revenue_chart
 from . import callbacks
 
+cache = Cache(
+    config={
+        'CACHE_TYPE': 'filesystem',
+        'CACHE_DIR': 'tmp'
+    }
+)
 
 # Initialization
 app = Dash(
@@ -15,12 +21,7 @@ app = Dash(
 )
 server = app.server
 
-cache = Cache(
-    server,
-    config={
-        'CACHE_TYPE': 'SimpleCache'  # In-memory caching
-    }
-)
+cache.init_app(app.server)
 
 # Layout
 app.layout = dbc.Container(
