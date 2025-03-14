@@ -2,12 +2,11 @@ from dash import Output, Input, callback, html
 import pandas as pd
 import altair as alt
 import dash_bootstrap_components as dbc
-import vegafusion
 
 from .data import df
+from .app import cache
 
-# Configure DuckDB connection
-vegafusion.runtime.set_connection("duckdb")
+alt.data_transformers.enable("vegafusion")
 
 @callback(
     Output('monthly-revenue', 'spec'),
@@ -15,6 +14,7 @@ vegafusion.runtime.set_connection("duckdb")
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     """
     Generates a monthly revenue line chart using Altair.
@@ -50,7 +50,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         height = 300
     )
     
-    return monthly_revenue_chart.to_dict()
+    return monthly_revenue_chart.to_dict(format="vega")
 
 # Define the function to create the pie chart (as you already have it)
 @callback(
@@ -59,6 +59,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_stacked_chart(start_date, end_date, selected_countries):
     """
     Creates a stacked chart showing Gross Revenue, Refunds, and Net Revenue.
@@ -109,7 +110,7 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
         height=300
     )
 
-    return chart.to_dict()
+    return chart.to_dict(format="vega")
 
 @callback(
     Output('product-bar-chart', 'spec'),
@@ -117,6 +118,7 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_top_products_revenue(start_date, end_date, selected_countries, n_products=10):
     """
     Generates a bar chart for top products by revenue.
@@ -163,13 +165,14 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         height = 300
     )
     
-    return bar_chart.to_dict()
+    return bar_chart.to_dict(format="vega")
 
 @callback(
     Output('country-pie-chart', 'spec'),
     Input('date-picker-range', 'start_date'),
     Input('date-picker-range', 'end_date')
 )
+@cache.memoize()
 def plot_top_countries_pie_chart(start_date, end_date):
     """
     Creates a pie chart showing the top 5 countries (excluding the UK) by sales.
@@ -236,7 +239,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
 
     pie_chart = (chart + text)
 
-    return pie_chart.to_dict()
+    return pie_chart.to_dict(format="vega")
 
 
 # Callback to update the cards dynamically based on the selected country
@@ -249,6 +252,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def update_cards(start_date, end_date, selected_countries):
     """
     Updates the key financial metric cards based on the selected date range and countries.
@@ -332,6 +336,7 @@ def update_cards(start_date, end_date, selected_countries):
     Input('date-picker-range', 'start_date'),
     Input('date-picker-range', 'end_date')
 )
+@cache.memoize()
 def compute_other_countries(start_date, end_date):
     """
     Computes the list of countries that fall under the "Others" category 
@@ -363,6 +368,7 @@ def compute_other_countries(start_date, end_date):
     Output('selected-country-store', 'data'),  # Store selected country
     Input('country-pie-chart', 'signalData')  # Capture Vega selection
 )
+@cache.memoize()
 def store_selected_country(signalData):
     """
     Captures the selected country from the pie chart and stores it.
@@ -394,6 +400,7 @@ def store_selected_country(signalData):
     Input('other-countries-store', 'data'),  # Read from stored "Others" countries
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def update_country_dropdown(selected_country, other_countries, dropdown_value):
     """
     Updates the country dropdown based on the selected country from the pie chart.
