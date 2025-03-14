@@ -1,5 +1,6 @@
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
+from flask_caching import Cache
 
 from .data import df
 from .components import date_picker_range, country_dropdown, cards_layout, product_bar_chart, country_pie_chart, stacked_chart, monthly_revenue_chart
@@ -12,6 +13,14 @@ app = Dash(
     title='RetaiLense Dashboard'
 )
 server = app.server
+
+cache = Cache(
+    app.server,
+    config={
+        'CACHE_TYPE': 'filesystem',
+        'CACHE_DIR': 'tmp'
+    }
+)
 
 # Layout
 app.layout = dbc.Container(

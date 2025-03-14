@@ -1,13 +1,15 @@
 from dash import Output, Input, callback, html
+from dash import Dash, dcc, html
+import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
-import dash_bootstrap_components as dbc
 import vegafusion
+from flask_caching import Cache
+
 
 from .data import df
+from .app import cache
 
-# Configure DuckDB connection
-vegafusion.runtime.set_connection("duckdb")
 
 @callback(
     Output('monthly-revenue', 'spec'),
@@ -15,6 +17,7 @@ vegafusion.runtime.set_connection("duckdb")
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     """
     Generates a monthly revenue line chart using Altair.
@@ -59,6 +62,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_stacked_chart(start_date, end_date, selected_countries):
     """
     Creates a stacked chart showing Gross Revenue, Refunds, and Net Revenue.
@@ -117,6 +121,7 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def plot_top_products_revenue(start_date, end_date, selected_countries, n_products=10):
     """
     Generates a bar chart for top products by revenue.
@@ -170,6 +175,7 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     Input('date-picker-range', 'start_date'),
     Input('date-picker-range', 'end_date')
 )
+@cache.memoize()
 def plot_top_countries_pie_chart(start_date, end_date):
     """
     Creates a pie chart showing the top 5 countries (excluding the UK) by sales.
@@ -249,6 +255,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
+@cache.memoize()
 def update_cards(start_date, end_date, selected_countries):
     """
     Updates the key financial metric cards based on the selected date range and countries.
