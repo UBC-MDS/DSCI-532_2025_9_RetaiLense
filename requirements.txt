@@ -13,3 +13,4 @@ vegafusion==1.6.*
 vegafusion-python-embed==1.6.*
 vl-convert-python==1.3.*
 duckdb==0.10.*
+flask_caching==2.3.*
