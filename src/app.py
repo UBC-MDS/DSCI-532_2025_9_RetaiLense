@@ -1,7 +1,9 @@
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 
+
 from .data import df
+from .cache_config import cache
 from .components import date_picker_range, country_dropdown, cards_layout, product_bar_chart, country_pie_chart, stacked_chart, monthly_revenue_chart
 from . import callbacks
 
@@ -12,6 +14,7 @@ app = Dash(
     title='RetaiLense Dashboard'
 )
 server = app.server
+cache.init_app(app.server)
 
 
 # Layout
