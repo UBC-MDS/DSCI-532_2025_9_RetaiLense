@@ -1,4 +1,4 @@
-from dash import Output, Input, callback, html
+from dash import Output, Input, callback, State, html
 import pandas as pd
 import altair as alt
 import dash_bootstrap_components as dbc
@@ -323,12 +323,14 @@ def update_cards(start_date, end_date, selected_countries):
     return card_loyal_customer_ratio_content, card_loyal_customer_sales_content, card_net_sales_content, card_total_returns_content
 
 
+
 @callback(
     Output('other-countries-store', 'data'),  # Store list of "Others" countries
     Input('date-picker-range', 'start_date'),
-    Input('date-picker-range', 'end_date')
+    Input('date-picker-range', 'end_date'),
+    Input('other-countries-store', 'data')
 )
-def compute_other_countries(start_date, end_date):
+def compute_other_countries(start_date, end_date, store):
     """
     Computes the list of countries that fall under the "Others" category 
     (i.e., all non-top-5 countries based on sales) and stores them.
@@ -388,7 +390,7 @@ def store_selected_country(signalData):
     Output('country-dropdown', 'value'),
     Input('selected-country-store', 'data'),  # Read from stored selection
     Input('other-countries-store', 'data'),  # Read from stored "Others" countries
-    Input('country-dropdown', 'value')
+    State('country-dropdown', 'value')
 )
 def update_country_dropdown(selected_country, other_countries, dropdown_value):
     """
@@ -405,12 +407,16 @@ def update_country_dropdown(selected_country, other_countries, dropdown_value):
     - list: A list of selected countries to update the dropdown. If "Others" is 
             selected, the dropdown will contain all non-top-5 countries.
     """
-    print(f"Dropdown Updated: {selected_country}")  # Debugging output
-    
+    print(f"Dropdown Updated - selected_country: {selected_country}")  # Debugging output
+    print(f"Dropdown Updated - other_countries: {other_countries}")  # Debugging output
+    print(f"Dropdown Updated - dropdown_value: {dropdown_value}")  # Debugging output
+
     if selected_country is None:
+        selected_country = None
         return dropdown_value
 
     if selected_country == "Others":
+        selected_country = None
         return other_countries  # Set dropdown to all "Others" countries
     
     return [selected_country] # Ensure it's a list (Dropdown expects a list)
