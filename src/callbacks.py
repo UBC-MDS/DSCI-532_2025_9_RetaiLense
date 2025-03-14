@@ -150,19 +150,29 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
     # Add new column to store the first three words of Description
     product_revenue['ProductName'] = product_revenue['Description'].str.split().str[:3].str.join(sep=" ").str.title() + "..."
     
+    # Adding colors to top 10 products
+    # color scheme for the top 10 products:
+    top_colors = [
+        '#decbe4', '#fbb4ae', '#feddaf', '#e5d9bd', '#f2f2f2',
+        '#b3cde3', '#ccebc5', '#ffffcc', '#fddaec', '#fbc2a9'
+    ]
+
+    # Assign colors to the top 10 products
+    product_revenue['Color'] = top_colors[:len(product_revenue)]
+
     # plot the bar chart
     bar_chart = alt.Chart(product_revenue).mark_bar().encode(
         x=alt.X('Revenue:Q', title='Revenue (£)'),
         y=alt.Y('ProductName:N', sort='-x', title='Product Name'),
-        color=alt.Color('ProductName:N', scale=alt.Scale(scheme='pastel1'), legend=None),
-        tooltip=[  # Format tooltip values with commas
+        color=alt.Color('Color:N', scale=None, legend=None),  
+        tooltip=[  
             alt.Tooltip('Description:N', title='Description'),
             alt.Tooltip('Revenue:Q', title='Revenue (£)', format=",.0f")
         ]
     ).properties(
         title=f'Top {n_products} Products by Revenue',
         width='container',
-        height = 300
+        height=300
     )
     
     return bar_chart.to_dict()
