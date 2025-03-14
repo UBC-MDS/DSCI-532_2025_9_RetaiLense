@@ -252,7 +252,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     Input('date-picker-range', 'end_date'),
     Input('country-dropdown', 'value')
 )
-@cache.memoize()
+#@cache.memoize()
 def update_cards(start_date, end_date, selected_countries):
     """
     Updates the key financial metric cards based on the selected date range and countries.
