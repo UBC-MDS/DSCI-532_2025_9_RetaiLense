@@ -18,8 +18,7 @@ server = app.server
 cache = Cache(
     server,
     config={
-        'CACHE_TYPE': 'filesystem',
-        'CACHE_DIR': 'tmp'
+        'CACHE_TYPE': 'SimpleCache'  # In-memory caching
     }
 )
 
