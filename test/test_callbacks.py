@@ -1,11 +1,12 @@
 import pytest
 import pandas as pd
 from unittest.mock import MagicMock
+from datetime import datetime
+
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from datetime import datetime
 from src.callbacks import (
     plot_monthly_revenue_chart,
     plot_stacked_chart,
@@ -16,7 +17,13 @@ from src.callbacks import (
     store_selected_country,
     update_country_dropdown
 )
+from src.app import cache
 
+def disable_cache():
+    cache.clear()  # Clear any existing cache
+    cache.memoize = lambda *args, **kwargs: lambda func: func  # Disable caching
+
+disable_cache()
 
 @pytest.mark.parametrize("start_date, end_date, selected_countries", [("2010-12-01", "2010-12-31", ["United Kingdom", "France"])])
 def test_plot_monthly_revenue_chart(start_date, end_date, selected_countries):
@@ -63,13 +70,11 @@ def test_update_cards(start_date, end_date, selected_countries):
     assert len(result) == 4, "Tuple should contain four elements."
 
 
-@pytest.mark.parametrize("start_date, end_date", [("2010-12-01", "2010-12-31")])
+@pytest.mark.parametrize('start_date, end_date', [('2010-12-01', '2010-12-31')])
 def test_compute_other_countries(start_date, end_date):
-    """
-    Tests the compute_other_countries function to ensure it returns a list of country names.
-    """
-    result = compute_other_countries(start_date, end_date)
-    assert isinstance(result, list), "Output should be a list of country names."
+    store = {}  # Or None, [] depending on expected type
+    result = compute_other_countries(start_date, end_date, store)
+    assert isinstance(result, list), 'Output should be a list of country names.'
 
 @pytest.mark.parametrize("signalData, expected", [
     ({"selected_country": {"Country": ["Germany"]}}, "Germany"),
