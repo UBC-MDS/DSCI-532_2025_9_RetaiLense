@@ -1,15 +1,19 @@
 from dash import Output, Input, callback, html
-from dash import Dash, dcc, html
-import dash_bootstrap_components as dbc
 import pandas as pd
 import altair as alt
 import vegafusion
 from flask_caching import Cache
 
-
 from .data import df
-from .app import cache
+from .app import server
 
+cache = Cache(
+    server,
+    config={
+        'CACHE_TYPE': 'filesystem',
+        'CACHE_DIR': 'tmp'
+    }
+)
 
 @callback(
     Output('monthly-revenue', 'spec'),
