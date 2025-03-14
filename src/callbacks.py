@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from .data import df
 from .app import cache
 
-alt.data_transformers.enable("vegafusion")
+#alt.data_transformers.enable("vegafusion")
 
 @callback(
     Output('monthly-revenue', 'spec'),
@@ -50,7 +50,7 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
         height = 300
     )
     
-    return monthly_revenue_chart.to_dict(format="vega")
+    return monthly_revenue_chart.to_dict()
 
 # Define the function to create the pie chart (as you already have it)
 @callback(
@@ -110,7 +110,7 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
         height=300
     )
 
-    return chart.to_dict(format="vega")
+    return chart.to_dict()
 
 @callback(
     Output('product-bar-chart', 'spec'),
@@ -165,7 +165,7 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
         height = 300
     )
     
-    return bar_chart.to_dict(format="vega")
+    return bar_chart.to_dict()
 
 @callback(
     Output('country-pie-chart', 'spec'),
@@ -239,7 +239,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
 
     pie_chart = (chart + text)
 
-    return pie_chart.to_dict(format="vega")
+    return pie_chart.to_dict()
 
 
 # Callback to update the cards dynamically based on the selected country
