@@ -13,7 +13,7 @@ date_picker_range = dcc.DatePickerRange(
     min_date_allowed=pd.to_datetime('2010-12-01'), 
     max_date_allowed=pd.to_datetime('2011-12-31'),
     display_format='YYYY-MM-DD',
-    style={'padding': '20px'}
+    style={'width': '100%'},  # Set width to match the parent
 )
 
 # Country Dropdown
@@ -23,7 +23,7 @@ country_dropdown = dcc.Dropdown(
     value=['United Kingdom'],  # Default to the UK as a list
     multi=True,
     placeholder="Select Country",
-    style={ 'padding': '20px'}
+    style={'padding': '10px', 'font-size': '12px'}
 )
 
 # Cards
