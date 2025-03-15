@@ -107,7 +107,7 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
     ]
     ).properties(
         title='Revenue Stacked Chart',
-        width=100,
+        width=200,
         height=300
     )
 
