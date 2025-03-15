@@ -104,6 +104,7 @@ app.layout = dbc.Container(
         style={'marginRight': '0', 'paddingRight': '0'}
         ),
         dbc.Row([
+            html.Hr(style={'borderBottom': '2px solid white', 'margin': '9px auto', 'width': '100%'}), 
             dbc.Col([
                 html.Div([
                     html.P(" ", style={"font-size": "12px"}),
