@@ -7,7 +7,6 @@ from textwrap import wrap
 from .data import df
 from .app import cache
 
-#alt.data_transformers.enable("vegafusion")
 
 @callback(
     Output('monthly-revenue', 'spec'),
@@ -18,15 +17,23 @@ from .app import cache
 @cache.memoize()
 def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     """
-    Generates a monthly revenue line chart using Altair.
+    Generates an interactive line chart showing the monthly revenue trend 
+    for the selected countries within the specified date range.
 
     Parameters:
-    - start_date (str): The start date selected in the date picker.
-    - end_date (str): The end date selected in the date picker.
-    - selected_countries (list): List of selected countries for filtering.
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
+    selected_countries : list
+        A list of selected countries used to filter the data.
 
     Returns:
-    - dict: Altair chart specification (JSON format).
+    -------
+    dict
+        A JSON-encoded Altair chart specification representing the monthly 
+        revenue trend.
     """
     # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
@@ -53,7 +60,6 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
     
     return monthly_revenue_chart.to_dict()
 
-# Define the function to create the pie chart (as you already have it)
 @callback(
     Output('stacked-chart', 'spec'),
     Input('date-picker-range', 'start_date'),
@@ -63,15 +69,23 @@ def plot_monthly_revenue_chart(start_date, end_date, selected_countries):
 @cache.memoize()
 def plot_stacked_chart(start_date, end_date, selected_countries):
     """
-    Creates a stacked chart showing Gross Revenue, Refunds, and Net Revenue.
+    Generates a stacked bar chart displaying Gross Revenue, Refunds, and Net Revenue 
+    for the selected countries within the specified date range.
 
     Parameters:
-    - start_date (str): The start date selected in the date picker.
-    - end_date (str): The end date selected in the date picker.
-    - selected_countries (list): List of selected countries for filtering.
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
+    selected_countries : list
+        A list of selected countries used to filter the data.
 
     Returns:
-    - dict: Altair chart specification (JSON format).
+    -------
+    dict
+        A JSON-encoded Altair chart specification representing the stacked bar 
+        chart of revenue components.
     """
     # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
@@ -122,16 +136,25 @@ def plot_stacked_chart(start_date, end_date, selected_countries):
 @cache.memoize()
 def plot_top_products_revenue(start_date, end_date, selected_countries, n_products=10):
     """
-    Generates a bar chart for top products by revenue.
+    Generates a horizontal bar chart displaying the top products by revenue 
+    within the selected date range and countries.
 
     Parameters:
-    - start_date (str): The start date selected in the date picker.
-    - end_date (str): The end date selected in the date picker.
-    - selected_countries (list): List of selected countries for filtering.
-    - n_products (int): Number of top products to display (default: 10).
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
+    selected_countries : list
+        A list of selected countries used for data filtering.
+    n_products : int, optional
+        The number of top products to display, default is 10.
 
     Returns:
-    - dict: Altair chart specification (JSON format).
+    -------
+    dict
+        A JSON-encoded Altair chart specification representing the 
+        top products by revenue.
     """
     # Filter the data based on selected date range and countries
     filtered_df = df[
@@ -188,14 +211,22 @@ def plot_top_products_revenue(start_date, end_date, selected_countries, n_produc
 @cache.memoize()
 def plot_top_countries_pie_chart(start_date, end_date):
     """
-    Creates a pie chart showing the top 5 countries (excluding the UK) by sales.
+    Generates an interactive pie chart displaying the top 5 countries by sales, 
+    excluding the United Kingdom. The chart also groups all other countries into 
+    an "Others" category.
 
     Parameters:
-    - start_date (str): The start date selected in the date picker.
-    - end_date (str): The end date selected in the date picker.
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
 
     Returns:
-    - dict: Altair chart specification (JSON format).
+    -------
+    dict
+        A JSON-encoded Altair chart specification representing the pie chart 
+        of the top 5 countries (excluding the UK) by sales.
     """
     # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
@@ -255,7 +286,7 @@ def plot_top_countries_pie_chart(start_date, end_date):
     return pie_chart.to_dict()
 
 
-# Callback to update the cards dynamically based on the selected country
+
 @callback(
     Output('card-loyal-customer-ratio', 'children'),
     Output('card-loyal-customer-sales', 'children'),
@@ -268,19 +299,25 @@ def plot_top_countries_pie_chart(start_date, end_date):
 #@cache.memoize()
 def update_cards(start_date, end_date, selected_countries):
     """
-    Updates the key financial metric cards based on the selected date range and countries.
+    Updates key financial metric cards based on the selected date range and countries.
 
     Parameters:
-    - start_date (str): The start date selected in the date picker.
-    - end_date (str): The end date selected in the date picker.
-    - selected_countries (list): List of selected countries for filtering.
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
+    selected_countries : list
+        A list of selected countries used for filtering data.
 
     Returns:
-    - tuple: A tuple containing the updated contents for four dashboard cards:
-        1. Loyal Customer Ratio (percentage)
-        2. Loyal Customer Sales (total revenue from known customers)
-        3. Net Sales (total revenue including refunds)
-        4. Total Returns (negative revenue from refunds)
+    -------
+    tuple
+        A tuple containing the updated content for four dashboard cards:
+        1. **Loyal Customer Ratio** (percentage of transactions from known customers).
+        2. **Loyal Customer Sales** (total revenue from identified customers).
+        3. **Net Sales** (total revenue, including refunds).
+        4. **Total Returns** (negative revenue due to refunds).
     """
     # Filter the data based on selected date range and countries
     filtered_df = df[(df['InvoiceDate'] >= pd.to_datetime(start_date)) & 
@@ -354,15 +391,23 @@ def update_cards(start_date, end_date, selected_countries):
 
 def compute_other_countries(start_date, end_date, store):
     """
-    Computes the list of countries that fall under the "Others" category 
-    (i.e., all non-top-5 countries based on sales) and stores them.
+    Identifies and returns a list of countries classified under the "Others" category. 
+    The "Others" category includes all countries except for the top 5 based on sales 
+    within the specified date range.
 
     Parameters:
-    - start_date (str): The selected start date from the date picker.
-    - end_date (str): The selected end date from the date picker.
+    ----------
+    start_date : str
+        The selected start date from the date picker (in YYYY-MM-DD format).
+    end_date : str
+        The selected end date from the date picker (in YYYY-MM-DD format).
+    store : list or None
+        Previously stored list of "Others" countries (not used in the computation).
 
     Returns:
-    - list: A list of country names that are not in the top 5 by sales.
+    -------
+    list
+        A list of country names that are outside the top 5 in sales, excluding the United Kingdom.
     """
     # Exclude the United Kingdom
     df_no_uk = df[df['Country'] != 'United Kingdom']
@@ -386,15 +431,20 @@ def compute_other_countries(start_date, end_date, store):
 @cache.memoize()
 def store_selected_country(signalData):
     """
-    Captures the selected country from the pie chart and stores it.
-    If "Others" is clicked, it stores "Others" instead of a single country.
+    Extracts and stores the selected country from the pie chart interaction. 
+    If "Others" is selected, it stores "Others" instead of an individual country.
 
     Parameters:
-    - signalData (dict): Data from the Vega chart representing the selected country.
+    ----------
+    signalData : dict or None
+        Data received from the Vega chart selection, containing details about the 
+        chosen country. If no selection is made, this may be None.
 
     Returns:
-    - str or None: The name of the selected country if a valid selection was made, 
-                   otherwise None.
+    -------
+    str or None
+        The name of the selected country if a valid selection was made. 
+        Returns None if no selection is detected.
     """
     print(f'store_selected_country {signalData}')  # Debugging output
     
@@ -418,18 +468,24 @@ def store_selected_country(signalData):
 @cache.memoize()
 def update_country_dropdown(selected_country, other_countries, dropdown_value):
     """
-    Updates the country dropdown based on the selected country from the pie chart.
-    If "Others" is clicked, it updates the dropdown with all non-top-5 countries.
+    Updates the country dropdown based on the selected country from the pie chart. 
+    If "Others" is selected, the dropdown is updated with all non-top-5 countries.
 
     Parameters:
-    - selected_country (str or None): The country selected from the pie chart.
-                                      If "Others" is clicked, it will be "Others".
-    - other_countries (list): List of all non-top-5 countries (stored separately).
-    - dropdown_value (list): List of original current country dropdown value.
+    ----------
+    selected_country : str or None
+        The country selected from the pie chart. If "Others" is selected, this will be "Others".
+    other_countries : list
+        A list of countries classified as "Others" (i.e., all non-top-5 countries).
+    dropdown_value : list
+        The current value(s) in the country dropdown before updating.
 
     Returns:
-    - list: A list of selected countries to update the dropdown. If "Others" is 
-            selected, the dropdown will contain all non-top-5 countries.
+    -------
+    list
+        A list of selected countries to update the dropdown. If "Others" is selected, 
+        the dropdown will be set to contain all non-top-5 countries. If no selection is 
+        made, the dropdown retains its previous value.
     """
     print(f"Dropdown Updated - selected_country: {selected_country}")  # Debugging output
     print(f"Dropdown Updated - other_countries: {other_countries}")  # Debugging output
@@ -444,3 +500,4 @@ def update_country_dropdown(selected_country, other_countries, dropdown_value):
         return other_countries  # Set dropdown to all "Others" countries
     
     return [selected_country] # Ensure it's a list (Dropdown expects a list)
+
