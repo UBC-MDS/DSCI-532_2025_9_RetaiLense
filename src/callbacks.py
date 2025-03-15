@@ -319,7 +319,7 @@ def update_cards(start_date, end_date, selected_countries):
     # Calculate total returns
     returns = filtered_df[filtered_df['Revenue'] < 0]
     total_returns_value = html.Span(
-        f"£{returns['Revenue'].sum():,.2f}",
+        f"-£{-1*returns['Revenue'].sum():,.2f}",
         style={'color': '#9A2A2A', 'fontWeight': 'bold'}  
     )
 
